@@ -16,8 +16,6 @@ from apps.users import views as users_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('apps.dashboard.urls')),
-    path('inventario/', include('apps.exampleInventario.urls')),
-    path('compras/', include('apps.examplePurchases.urls')),
     
     # User and Registration urls
     path('', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
