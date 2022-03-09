@@ -44,6 +44,12 @@ INSTALLED_APPS = [
     # Django Project Apps
     'apps.dashboard',
     'apps.users',
+    'apps.sales',
+    'apps.customers',
+    'apps.credits',
+    'apps.products',
+    'apps.providers',
+    'apps.purchases',
 
     # Third Pary Apps
     'crispy_forms',

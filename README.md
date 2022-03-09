@@ -46,6 +46,13 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+### Create touy Virtual Env and install requirements in linux
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
 ## Create a superuser for the Django admin
 
 ```bash
