@@ -140,3 +140,6 @@ GitHub.sublime-settings
 .history
 
 .idea/
+
+# Commands to run the server
+run
