@@ -30,3 +30,13 @@ class PurchaseDetails(models.Model):
     amount = models.FloatField(null=False, blank=False)
     total =  models.FloatField(null=False, blank=False)
     price = models.FloatField(null=False, blank=False)
+    
+    class Meta:
+        db_table = "purchase_details"
+        verbose_name = 'purchase detail'
+        verbose_name_plural = 'purchase details'
+        ordering = ["id"]
+        
+    
+    def __str__(self):
+        return f'{self.purchase} - {self.product}'
