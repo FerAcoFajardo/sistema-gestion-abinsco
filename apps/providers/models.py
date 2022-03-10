@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class providers (models.Model):
+class Providers (models.Model):
     name= models.CharField(max_length=100, null=False, blank=False)
     rfc = models.CharField(max_length=13, null= False, blank = False)
     address= models.CharField(max_length=200, null=False, blank=True)

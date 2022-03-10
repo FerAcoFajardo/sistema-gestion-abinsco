@@ -8,7 +8,7 @@ class Customers(models.Model):
     phone = models.CharField(max_length=10, null=False, blank=True)
     email = models.EmailField(null=False, blank=True)
     # credit = models.ForeignKey('credit.Credit', on_delete=models.CASCADE)
-    sale = models.ForeignKey('sales.Sales', on_delete=models.CASCADE)
+    # sale = models.ForeignKey('sales.Sales', on_delete=models.CASCADE)
 
     class Meta:
         db_table = "customers"
