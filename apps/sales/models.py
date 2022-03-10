@@ -22,7 +22,7 @@ class Sales(models.Model):
 class SaleDetails(models.Model):
     sale = models.ForeignKey('sales.Sales', on_delete=models.CASCADE)
     product = models.ForeignKey('products.Products', on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    amount = models.IntegerField()
     total = models.FloatField(null=False, blank=False, default=0)
     price = models.FloatField(null=False, blank=False, default=0)
     
