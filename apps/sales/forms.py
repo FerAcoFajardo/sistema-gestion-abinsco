@@ -46,6 +46,9 @@ class SalesForm(forms.ModelForm):
         self.fields['user'].required = True
         self.fields['user'].initial = user
         
+        self.fields['customer'].required = False
+        self.fields['customer'].initial = customer
+        
         
 # Form set to create sale details
 class SaleDetailsForm(forms.ModelForm):
@@ -66,3 +69,19 @@ class SaleDetailsForm(forms.ModelForm):
             'amount': 'Cantidad',
             'total': 'Total',
         }
+        
+        
+    def clean_product(self):
+        """Valida si hay stock
+
+        Raises:
+            ValidationError: Error de validación
+
+        Returns:
+            _type_: _description_
+        """
+        product = self.cleaned_data['product']
+        amount = self.cleaned_data['amount']
+        if product.stock < amount:
+            raise ValidationError('El producto no tiene suficiente stock')
+        return product
