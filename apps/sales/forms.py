@@ -40,6 +40,7 @@ class SalesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = self.user
+        customer = kwargs.pop('customer')
         super(SalesForm, self).__init__(*args, **kwargs)
         
         self.fields['user'].required = True

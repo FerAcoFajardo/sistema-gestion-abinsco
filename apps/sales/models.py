@@ -1,5 +1,6 @@
 from tabnanny import verbose
 from django.db import models
+from django.forms import FloatField
 
 # Create your models here.
 
@@ -8,6 +9,7 @@ class Sales(models.Model):
     commentaries = models.TextField(null=True, blank=True)
     customer = models.ForeignKey('customers.Customers', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    total = models.FloatField(null=True, blank=True)
     
     class Meta:
         db_table = 'sales' # this is the name of the table in the database
