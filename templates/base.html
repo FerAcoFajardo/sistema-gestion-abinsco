@@ -94,17 +94,19 @@
                                     type="button">
                                 <i class="fas fa-bars"></i>
                             </button>
+                            {% comment %}
                             <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
                                 <div class="input-group">
-                                    <input class="bg-light form-control border-0 small"
-                                           type="text"
-                                           placeholder="Search for ...">
-                                    </input>
-                                <button class="btn btn-primary py-0" type="button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
+                                        <input class="bg-light form-control border-0 small"
+                                            type="text"
+                                            placeholder="Search for ...">
+                                        </input>
+                                    <button class="btn btn-primary py-0" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            {% endcomment %}
                         <ul class="navbar-nav flex-nowrap ms-auto">
                             <li class="nav-item dropdown d-sm-none no-arrow">
                                 <a class="dropdown-toggle nav-link"
@@ -192,7 +194,7 @@
                         </li>
                         <li class="nav-item dropdown no-arrow mx-1">
                             <div class="nav-item dropdown no-arrow">
-                            
+
                                 {% comment %}
                                 <a class="dropdown-toggle nav-link"
                                    aria-expanded="false"
