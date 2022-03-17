@@ -2,6 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+
 from .models import (
         Sales,
         SaleDetails,
@@ -12,6 +13,8 @@ from ..products.models import (
     )
 
 
+from pprint import pprint
+
 # Form to create sales
 class SalesForm(forms.ModelForm):
     
@@ -19,14 +22,14 @@ class SalesForm(forms.ModelForm):
         model = Sales
         
         fields = [
-            'date',
+            # 'date',
             'commentaries',
             'customer',
             'user',
         ]
         
         labels = {
-            'date': 'Fecha',
+            # 'date': 'Fecha',
             'commentaries': 'Comentarios',
             'customer': 'Cliente',
             'user': 'Usuario',
@@ -39,8 +42,10 @@ class SalesForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        user = self.user
-        customer = kwargs.pop('customer')
+        # pprint(kwargs)
+        form_kwargs = kwargs.pop('form_kwargs')
+        customer = form_kwargs.pop('customer')
+        user = form_kwargs.pop('user')
         super(SalesForm, self).__init__(*args, **kwargs)
         
         self.fields['user'].required = True
@@ -85,3 +90,10 @@ class SaleDetailsForm(forms.ModelForm):
         if product.stock < amount:
             raise ValidationError('El producto no tiene suficiente stock')
         return product
+    
+    
+    def __init__(self, *args, **kwargs):
+        form_kwargs = kwargs.pop('form_kwargs')
+        # customer = form_kwargs.pop('customer')
+        # user = form_kwargs.pop('user')
+        super(SaleDetailsForm, self).__init__(*args, **kwargs)

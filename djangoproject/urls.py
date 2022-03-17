@@ -16,6 +16,8 @@ from apps.users import views as users_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('apps.dashboard.urls')),
+    path('users/', include('apps.users.urls')),
+    path('sales/', include('apps.sales.urls')),
     
     # User and Registration urls
     path('', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
@@ -23,7 +25,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/login.html'), name='logout'),
     path('register/', users_views.register_view, name='register'),
     path('forgot-password/', users_views.forgot_password, name='forgot-password'),
-    path('users/', include('apps.users.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Remember that the last line regarding file/image uploads must be changed for production purposes: 
