@@ -75,6 +75,10 @@ class SaleDetailsForm(forms.ModelForm):
             'total': 'Total',
         }
         
+        widget = {
+            'sale': forms.HiddenInput(),
+        }
+        
         
     def clean_product(self):
         """Valida si hay stock
@@ -97,3 +101,4 @@ class SaleDetailsForm(forms.ModelForm):
         # customer = form_kwargs.pop('customer')
         # user = form_kwargs.pop('user')
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
+        
