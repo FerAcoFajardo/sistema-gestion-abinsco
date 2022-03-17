@@ -8,15 +8,15 @@
 
 {% block content %}
     <form method="POST">
-        {{form|crispy}}
+        {% csrf_token %}
         {{form_details|crispy}}
+        {{form|crispy}}
 
         <div class="col-md-12" style="text-align: right;margin-top: 5px;">
             <button class="btn btn-primary btn-sm" type="submit">
                 Guardar
             </button>
         </div>
-
     </form>
 {% endblock %}
 

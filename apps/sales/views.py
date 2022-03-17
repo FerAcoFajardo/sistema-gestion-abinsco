@@ -25,8 +25,8 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         """
         print(self.get_form_kwargs(pk=pk))
-        form = SalesForm(form_kwargs=self.get_form_kwargs(pk=pk))
-        form_details = SaleDetailsForm(form_kwargs=self.get_form_kwargs(pk=pk))
+        form = SalesForm(initial=self.get_form_kwargs(pk=pk))
+        form_details = SaleDetailsForm(initial=self.get_form_kwargs(pk=pk))
         return render(request, self.template, {'form': form, 'form_details': form_details})
     
     
@@ -43,8 +43,8 @@ class CreateView(LoginRequiredMixin, View):
         # Obtener el id del cliente desde el url
         customer_id = kwargs.get('pk')
         customer = Customers.objects.get(id=customer_id)
-        form = SalesForm(request.POST)
-        form_details = SaleDetailsForm(request.POST)
+        form = SalesForm(request.POST, initial = self.get_form_kwargs )
+        form_details = SaleDetailsForm(request.POST, initial = self.get_form_kwargs)
         
         if form.is_valid() and form_details.is_valid():
             # Creación de una venta

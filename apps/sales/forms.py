@@ -23,9 +23,9 @@ class SalesForm(forms.ModelForm):
         
         fields = [
             # 'date',
-            'commentaries',
             'customer',
             'user',
+            'commentaries',
         ]
         
         labels = {
@@ -43,9 +43,9 @@ class SalesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # pprint(kwargs)
-        form_kwargs = kwargs.pop('form_kwargs')
-        customer = form_kwargs.pop('customer')
-        user = form_kwargs.pop('user')
+        # form_kwargs = kwargs.pop('form_kwargs')
+        customer = kwargs.pop('customer')
+        user = kwargs.pop('user')
         super(SalesForm, self).__init__(*args, **kwargs)
         
         self.fields['user'].required = True
@@ -75,7 +75,7 @@ class SaleDetailsForm(forms.ModelForm):
             'total': 'Total',
         }
         
-        widget = {
+        widgets = {
             'sale': forms.HiddenInput(),
         }
         
@@ -97,7 +97,7 @@ class SaleDetailsForm(forms.ModelForm):
     
     
     def __init__(self, *args, **kwargs):
-        form_kwargs = kwargs.pop('form_kwargs')
+        # form_kwargs = kwargs.pop('form_kwargs')
         # customer = form_kwargs.pop('customer')
         # user = form_kwargs.pop('user')
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
