@@ -48,7 +48,7 @@ class CreateView(LoginRequiredMixin, View):
         customer = form_kwargs.get('customer')
         # form_details = SaleDetailsForm(initial=form_kwargs)
         
-        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=2)
+        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(form_kwargs=form_kwargs)
         
         return render(request, self.template, {'form': form, 'customer':customer, 'formset': formset})
@@ -70,7 +70,7 @@ class CreateView(LoginRequiredMixin, View):
         form_kwargs = self.get_form_kwargs(pk=customer_id)
         form = SalesForm(request.POST, initial = form_kwargs)
         # form_details = SaleDetailsForm(request.POST, initial = form_kwargs)
-        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=2)
+        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(request.POST,form_kwargs=form_kwargs)
         
         if form.is_valid() :

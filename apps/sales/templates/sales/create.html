@@ -89,20 +89,19 @@
                     </div>
                 </div>
             {% endfor %}
-
+            
+            
             <div id="empty-form" class="">{{ formset.empty_form }}</div>
-            <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
-
         {% endif %}
-
+            
         {{form|crispy}}
+        
+        <div class="btn-group-justified" role="group" aria-label="...">
+            <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
+            <button class="btn btn-primary" type="submit">Guardar</button>
+        </div>
 
-            <div class="col-md-12" style="text-align: right;margin-top: 5px;">
-                <button class="btn btn-primary btn-sm save-sale" type="submit">
-                    Guardar
-                </button>
-            </div>
-
+            
     </form>
 {% endblock %}
 
@@ -163,28 +162,9 @@
                         price.value = data.price;
                     }
                 });
-                // get the price from the product
-                // price.value = product.options[product.selectedIndex].dataset.price;
             });
-            // get the first form price
-            // get total price
-            // set total price
-            // total.value = amount.value * price.value;
 
         }
-
-
-
-        /*id_amount.oninput = function() {
-            price = document.getElementById(`form-`).value;
-            document.getElementById("id_total").value = id_amount.value * price;
-        };
-
-        id_price.oninput = function() {
-            amount = document.getElementById("id_amount").value;
-            price = document.getElementById("id_price").value;
-            document.getElementById("id_total").value = amount * price;
-        };*/
 
         const selectElement = document.getElementById('id_product');
 
@@ -192,6 +172,12 @@
             price = document.getElementById("id_price");
             price.value = event.target.value;
         });
+
+        cons addMoreBtn = document.getElementById('add-form');
+
+
+
+
     </script>
 
 {% endblock %}
