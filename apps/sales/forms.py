@@ -116,4 +116,4 @@ class SaleDetailsForm(forms.ModelForm):
         
         self.fields['sale'].required = False
         self.fields['total'].widget.attrs['readonly'] = True     
-        self.fields['price'].widget.attrs['readonly'] = True     
+        self.fields['price'].widget.attrs['readonly'] = True      
