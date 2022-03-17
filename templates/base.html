@@ -340,9 +340,45 @@
 <!-- General Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Page level plugins -->
 {% block js %}{% endblock %}
 <script src="{% static 'assets/js/script.min.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        {% comment %} <div id=“message-{{forloop.counter}}" onCreate="showSweetAlert('{{message.level}}','{{message.tags}}','{{message}}');"></div> {% endcomment %}
+        <script>
+            let title = "";
+            if("{{message.tags}}" === 'error'){
+                title = "Error!!";
+            }
+            if ('{{message.tags}}' === 'success'){
+                title = "Exito!!";
+            }
+            if ("{{message.tags}}" === 'warning'){
+                title = "Advertencia!!";
+            }
+            if ("{{message.tags}}" === 'info'){
+                title = "Información";
+            }
+
+            Swal.fire({
+                title: title,
+                text: '{{message}}',
+                type: '{{message.tags}}',
+                icon: '{{message.tags}}',
+                confirmButtonText: 'OK'
+            });
+
+        </script>
+    {% endfor %}
+</ul>
+{% endif %}
+
 </body>
 </html>

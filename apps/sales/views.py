@@ -5,6 +5,7 @@ from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import formset_factory
 from django.http import JsonResponse
+from django.contrib import messages
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
@@ -29,6 +30,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 class CreateView(LoginRequiredMixin, View):
     template = 'sales/create.html'
     succes_url = reverse_lazy('sales:index')
+    message = 'La venta se ha registrado correctamente'
     
     
     def get(self,request, pk):
@@ -83,7 +85,7 @@ class CreateView(LoginRequiredMixin, View):
                 if form_details.is_valid():
                     # Creación de un detalle de venta
                     details = form_details.save(commit=False)
-                    total_price += details.price
+                    total_price += details.total
                     details.sale = sale
                     # details.product
                     details.save()
@@ -115,6 +117,8 @@ class CreateView(LoginRequiredMixin, View):
                 self.form_invalid(form, formset)
             sale.total = total_price
             sale.save()
+            
+            messages.success(request,self.message)
             return redirect(self.succes_url)
         else:
             print(f'{form.errors=}')

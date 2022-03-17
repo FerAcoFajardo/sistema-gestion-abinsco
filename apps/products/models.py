@@ -19,6 +19,10 @@ class Products(models.Model):
     code = models.CharField(max_length=10, null=False, blank=False)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
     unity = models.CharField(max_length=20,choices=UNITY_CHOICES, default='pz' ,null=False, blank=False) # Enum
+    
+    def validate_in_storage(self, value):
+        if self.in_storage >= value:
+            return "Estas vendiendo mas de la existencia en inventario"
 
     class Meta:
         db_table = "products"
