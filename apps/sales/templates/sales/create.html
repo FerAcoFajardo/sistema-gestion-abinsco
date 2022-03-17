@@ -35,9 +35,22 @@
 
     <script>
         id_amount.oninput = function() {
-            id_price = document.getElementById("id_price").value;
-            document.getElementById("id_total").value = id_amount.value * id_price;
+            price = document.getElementById("id_price").value;
+            document.getElementById("id_total").value = id_amount.value * price;
         };
+
+        id_price.oninput = function() {
+            amount = document.getElementById("id_amount").value;
+            price = document.getElementById("id_price").value;
+            document.getElementById("id_total").value = amount * price;
+        };
+
+        const selectElement = document.getElementById('id_product');
+
+        selectElement.addEventListener('change', (event) => {
+            price = document.getElementById("id_price");
+            price.value = event.target.value;
+        });
     </script>
 
 {% endblock %}
