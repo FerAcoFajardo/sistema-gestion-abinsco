@@ -115,4 +115,5 @@ class SaleDetailsForm(forms.ModelForm):
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
         
         self.fields['sale'].required = False
-        
+        self.fields['total'].widget.attrs['readonly'] = True     
+        self.fields['price'].widget.attrs['readonly'] = True     

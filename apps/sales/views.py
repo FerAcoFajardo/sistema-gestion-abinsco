@@ -4,10 +4,12 @@ from django.views import View, generic
 from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import formset_factory
+from django.http import JsonResponse
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
 from ..customers.models import Customers
+from ..products.models import Products
 
 from pprint import pprint
 
@@ -160,3 +162,27 @@ class CreateView(LoginRequiredMixin, View):
         
         """
         return render(self.request, self.template, {'form': form, 'formset': formset})
+    
+    
+# View to get a procuct from id and return a json
+def get_product(request, pk):
+    """_summary_
+
+    Args:
+        request (_type_): _description_
+        pk (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    if request.method == 'GET':
+        product = Products.objects.get(id=pk)
+        data = {
+            'name': product.name,
+            'price': product.current_price,
+            'stock': product.in_storage,
+            # 'description': product.description,
+        }
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418})

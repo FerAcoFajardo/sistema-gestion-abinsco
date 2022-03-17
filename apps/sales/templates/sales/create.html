@@ -98,15 +98,81 @@
                     Guardar
                 </button>
             </div>
-        </div>
     </form>
 {% endblock %}
 
 {% block js %}
 
     <script>
-        id_amount.oninput = function() {
-            price = document.getElementById("id_price").value;
+
+        let form_counter = {{formset|length}};
+        console.log(form_counter);
+
+        // For to iterate over the formset
+        for (let i = 0; i < form_counter; i++) {
+            // get the first form amount
+            let amount = document.getElementById('id_form-' + i + '-amount');
+
+            // set onInput function to calculate total on amount
+            amount.oninput = function () {
+                // get the total
+                let total = document.getElementById('id_form-' + i + '-total');
+
+                // get price
+                let price = document.getElementById('id_form-' + i + '-price');
+
+                // calculate total
+                total.value = price.value * amount.value;
+
+            };
+            
+            let price = document.getElementById('id_form-' + i + '-price');
+            // set onInput function to calculate total on amount
+            price.oninput = function () {
+                // get the total
+                let total = document.getElementById('id_form-' + i + '-total');
+
+                // gget price
+//                let amount = document.getElementById('id_form-' + i + '-price');
+
+                // calculate total
+                total.value = price.value * amount.value;
+
+            };
+
+            // get product from selectElement
+            let product = document.getElementById('id_form-' + i + '-product');
+            // add evenLister on change to get the product and set the price
+            product.addEventListener('change', function () {
+                // get the price
+                let price = document.getElementById('id_form-' + i + '-price');
+                // get the product
+                // Ajax call to get_product/<int:pk>/
+                let base_url = "http://localhost:8000/"
+                $.ajax({
+                    url: `${base_url}sales/get_product/${product.value}/`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // set the price
+                        console.log(data);
+                        price.value = data.price;
+                    }
+                });
+                // get the price from the product
+                // price.value = product.options[product.selectedIndex].dataset.price;
+            });
+            // get the first form price
+            // get total price
+            // set total price
+            // total.value = amount.value * price.value;
+
+        }
+
+
+
+        /*id_amount.oninput = function() {
+            price = document.getElementById(`form-`).value;
             document.getElementById("id_total").value = id_amount.value * price;
         };
 
@@ -114,7 +180,7 @@
             amount = document.getElementById("id_amount").value;
             price = document.getElementById("id_price").value;
             document.getElementById("id_total").value = amount * price;
-        };
+        };*/
 
         const selectElement = document.getElementById('id_product');
 
