@@ -1,0 +1,31 @@
+#titulo-cliente,
+#titulo-otra-info {
+    font-weight: bolder; 
+    color: #404040;
+    margin-top: 5px;
+}
+
+#estilo-tabla {
+    border: 1px solid black; 
+    padding: 10px 20px 2px 20px; 
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    width: auto;
+    margin: 15px 0px 15px 15px;
+}
+
+#estilo-tabla > dl > dt {
+    color: #767676;
+}
+
+#estilo-tabla > dl > dd {
+    color: #9B9B9B;
+}
+
+#radios {
+    margin: 5px 0px 5px 15px;
+}
+
+#credito {
+    margin-bottom: 15px;
+}
