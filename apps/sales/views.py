@@ -8,6 +8,8 @@ from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
 from ..customers.models import Customers
 
+from pprint import pprint
+
 # Create your views here.
 
 class CreateView(LoginRequiredMixin, View):
@@ -24,7 +26,7 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
-        print(self.get_form_kwargs(pk=pk))
+        # print(self.get_form_kwargs(pk=pk))
         form = SalesForm(initial=self.get_form_kwargs(pk=pk))
         form_details = SaleDetailsForm(initial=self.get_form_kwargs(pk=pk))
         return render(request, self.template, {'form': form, 'form_details': form_details})
@@ -43,30 +45,39 @@ class CreateView(LoginRequiredMixin, View):
         # Obtener el id del cliente desde el url
         customer_id = kwargs.get('pk')
         customer = Customers.objects.get(id=customer_id)
-        form = SalesForm(request.POST, initial = self.get_form_kwargs )
-        form_details = SaleDetailsForm(request.POST, initial = self.get_form_kwargs)
+        form_kwargs = self.get_form_kwargs(pk=customer_id)
+        form = SalesForm(request.POST, initial = form_kwargs)
+        form_details = SaleDetailsForm(request.POST, initial = form_kwargs)
         
         if form.is_valid() and form_details.is_valid():
             # Creación de una venta
             sale = form.save()
             total_price = 0
-            for detail in form_details.cleaned_data['product']:
-                total_price += form_details.cleaned_data['price'][detail]
-                sale_detail = SaleDetails(
-                    sale=sale,
-                    product=detail,
-                    amount=form_details.cleaned_data['amount'][detail],
-                    total=form_details.cleaned_data['total'][detail],
-                    price=form_details.cleaned_data['price'][detail],
-                )
-                
-                sale_detail.save()
+            total_price += form_details.cleaned_data['price']
+            
+            amount = form_details.cleaned_data['amount']
+            total = form_details.cleaned_data['total']
+            price = form_details.cleaned_data['price']
+            product = form_details.cleaned_data['product']
+            
+            
+            sale_detail = SaleDetails(
+                sale=sale,
+                product=product,
+                amount=amount,
+                total=total,
+                price=price,
+            )
+            
+            sale_detail.save()
                 
             sale.total = total_price
             
             return self.succes_url
         else:
-            return self.form_invalid(form, form_details)
+            print(f'{form.errors=}')
+            print(f'{form_details.errors=}')
+            return render(self.request, self.template, {'form': form, 'form_details': form_details})
         
         
     def get_form_kwargs(self, pk, **kwargs):

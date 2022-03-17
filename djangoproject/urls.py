@@ -17,7 +17,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('apps.dashboard.urls')),
     path('users/', include('apps.users.urls')),
-    path('sales/', include('apps.sales.urls')),
+    path('sales/', include('apps.sales.urls')), 
     
     # User and Registration urls
     path('', auth_views.LoginView.as_view(redirect_authenticated_user=True), name='login'),

@@ -42,17 +42,18 @@ class SalesForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        # pprint(kwargs)
         # form_kwargs = kwargs.pop('form_kwargs')
-        customer = kwargs.pop('customer')
-        user = kwargs.pop('user')
+        customer = kwargs.pop('customer', None)
+        user = kwargs.pop('user', None)
         super(SalesForm, self).__init__(*args, **kwargs)
         
         self.fields['user'].required = True
-        self.fields['user'].initial = user
+        if user is not None:
+            self.fields['user'].initial = user
         
         self.fields['customer'].required = False
-        self.fields['customer'].initial = customer
+        if customer is not None:
+            self.fields['customer'].initial = customer
         
         
 # Form set to create sale details
@@ -90,8 +91,10 @@ class SaleDetailsForm(forms.ModelForm):
             _type_: _description_
         """
         product = self.cleaned_data['product']
-        amount = self.cleaned_data['amount']
-        if product.stock < amount:
+        # pprint(self.cleaned_data)
+        amount = self.data['amount']
+        amount = int(amount)
+        if product.in_storage < amount:
             raise ValidationError('El producto no tiene suficiente stock')
         return product
     
@@ -101,4 +104,6 @@ class SaleDetailsForm(forms.ModelForm):
         # customer = form_kwargs.pop('customer')
         # user = form_kwargs.pop('user')
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
+        
+        self.fields['sale'].required = False
         
