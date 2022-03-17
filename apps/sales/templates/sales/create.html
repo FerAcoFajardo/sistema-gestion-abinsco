@@ -31,3 +31,14 @@
     </form>
 {% endblock %}
 
+{% block js %}
+
+    <script>
+        id_amount.oninput = function() {
+            id_price = document.getElementById("id_price").value;
+            document.getElementById("id_total").value = id_amount.value * id_price;
+        };
+    </script>
+
+{% endblock %}
+
