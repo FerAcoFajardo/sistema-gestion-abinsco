@@ -15,21 +15,54 @@
 
 
     <div class="row">
-        <div class="col-md-12" id="estilo-tabla">
+        <div class="col-md-12">
+            <div  id="estilo-tabla">
+                <div class="col-md-6">
+                    <h2 id="titulo-cliente">Información del cliente:</h2>
+                    <dl>
+                        <dt>Nombre</dt>
+                        <dd>{{customer.name}}</dd>
+                        <dt>RFC</dt>
+                        <dd>{{customer.rfc}}</dd>
+                        <dt>Dirección</dt>
+                        <dd>{{customer.address}}</dd>
+                        <dt>Teléfono</dt>
+                        <dd>{{customer.phone}}</dd>
+                        <dt>Correo</dt>
+                        <dd>{{customer.email}}</dd>
+                    </dl>
+                </div>
 
-            <h2 id="titulo-cliente">Información del cliente:</h2>
-            <dl>
-                <dt>Nombre</dt>
-                <dd>{{customer.name}}</dd>
-                <dt>RFC</dt>
-                <dd>{{customer.rfc}}</dd>
-                <dt>Dirección</dt>
-                <dd>{{customer.address}}</dd>
-                <dt>Teléfono</dt>
-                <dd>{{customer.phone}}</dd>
-                <dt>Correo</dt>
-                <dd>{{customer.email}}</dd>
-            </dl>
+                <div class="col-md-6">            
+                    <h2 id="titulo-cliente">Otra información:</h2>
+                    
+                    <p>Seleccione un método de pago:</p>
+
+                    <div id="radios">
+                        <input type="radio" id="efectivo" name="metodo" value="efectivo"
+                                checked>
+                        <label for="efectivo">Efectivo</label>
+                    </div>
+                    <div id="radios">
+                        <input type="radio" id="tarjeta" name="metodo" value="tarjeta"
+                                >
+                        <label for="tarjeta">Tarjeta</label>
+                    </div>
+
+                    <p>Seleccione tipo de venta:</p>
+
+                    <div id="radios">
+                        <input type="radio" id="contado" name="tipo" value="contado"
+                                checked>
+                        <label for="contado">Contado</label>
+                    </div>
+                    <div id="radios">
+                        <input type="radio" id="credito" name="tipo" value="credito"
+                                >
+                        <label for="credito">Credito</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -58,44 +91,13 @@
 
         {{form|crispy}}
 
-        <div class="row">
-            <div class="col-md-12" id="estilo-tabla">
-    
-                <h2 id="titulo-cliente">Otra información:</h2>
-                
-                <p>Seleccione un método de pago:</p>
+        
 
-                <div id="radios">
-                    <input type="radio" id="efectivo" name="metodo" value="efectivo"
-                            checked>
-                    <label for="efectivo">Efectivo</label>
-                </div>
-                <div id="radios">
-                    <input type="radio" id="tarjeta" name="metodo" value="tarjeta"
-                            >
-                    <label for="tarjeta">Tarjeta</label>
-                </div>
-
-                <p>Seleccione tipo de venta:</p>
-
-                <div id="radios">
-                    <input type="radio" id="contado" name="tipo" value="contado"
-                            checked>
-                    <label for="contado">Contado</label>
-                </div>
-                <div id="radios">
-                    <input type="radio" id="credito" name="tipo" value="credito"
-                            >
-                    <label for="credito">Credito</label>
-                </div>
-
+            <div class="col-md-12" style="text-align: right;margin-top: 5px;">
+                <button class="btn btn-primary btn-sm save-sale" type="submit">
+                    Guardar
+                </button>
             </div>
-        </div>
-
-        <div class="col-md-12" style="text-align: right;margin-top: 5px;">
-            <button class="btn btn-primary btn-sm" type="submit">
-                Guardar
-            </button>
         </div>
     </form>
 {% endblock %}
@@ -104,9 +106,22 @@
 
     <script>
         id_amount.oninput = function() {
-            id_price = document.getElementById("id_price").value;
-            document.getElementById("id_total").value = id_amount.value * id_price;
+            price = document.getElementById("id_price").value;
+            document.getElementById("id_total").value = id_amount.value * price;
         };
+
+        id_price.oninput = function() {
+            amount = document.getElementById("id_amount").value;
+            price = document.getElementById("id_price").value;
+            document.getElementById("id_total").value = amount * price;
+        };
+
+        const selectElement = document.getElementById('id_product');
+
+        selectElement.addEventListener('change', (event) => {
+            price = document.getElementById("id_price");
+            price.value = event.target.value;
+        });
     </script>
 
 {% endblock %}
