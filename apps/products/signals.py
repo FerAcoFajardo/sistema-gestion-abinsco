@@ -7,7 +7,7 @@ from ..sales.models import Sales, SaleDetails
 
 # Signals pare quitar el stock de los productos
 @receiver(post_save, sender=SaleDetails)
-async def update_stock(sender, instance, **kwargs):
+def update_stock(sender, instance, **kwargs):
     """_summary_
 
     Args:
@@ -18,5 +18,7 @@ async def update_stock(sender, instance, **kwargs):
         _type_: _description_
     """
     with transaction.atomic():
-        instance.product.stock -= instance.amount
+        if instance.product.in_storage == 0:
+            return
+        instance.product.in_storage -= instance.amount
         instance.product.save()

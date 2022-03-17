@@ -83,28 +83,35 @@ class SaleDetailsForm(forms.ModelForm):
         }
         
         
-    def clean_product(self):
-        """Valida si hay stock
+    # def clean_amount(self):
+    #     """Valida si hay stock
 
-        Raises:
-            ValidationError: Error de validación
+    #     Raises:
+    #         ValidationError: Error de validación
 
-        Returns:
-            _type_: _description_
-        """
-        product = self.cleaned_data['product']
-        # pprint(self.cleaned_data)
-        amount = self.data['amount']
-        amount = int(amount)
-        if product.in_storage < amount:
-            raise ValidationError('El producto no tiene suficiente stock')
-        return product
+    #     Returns:
+    #         _type_: _description_
+    #     """
+    #     product = self.cleaned_data['product']
+    #     # pprint(self.cleaned_data)
+    #     amount = self.cleaned_data['amount']
+    #     amount = int(amount)
+    #     if product.in_storage < amount:
+    #         raise ValidationError('El producto no tiene suficiente stock')
+    #     return product
     
     
     def __init__(self, *args, **kwargs):
         # form_kwargs = kwargs.pop('form_kwargs')
         # customer = form_kwargs.pop('customer')
         # user = form_kwargs.pop('user')
+        form_kwargs = kwargs.pop('form_kwargs', None)
+        if form_kwargs is not None:
+            customer = form_kwargs.pop('customer', None)
+            user = form_kwargs.pop('user', None)
+        else:
+            customer = kwargs.pop('customer', None)
+            user = kwargs.pop('user', None)
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
         
         self.fields['sale'].required = False

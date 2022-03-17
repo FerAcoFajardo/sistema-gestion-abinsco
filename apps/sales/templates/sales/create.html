@@ -37,7 +37,25 @@
 
     <form method="POST">
         {% csrf_token %}
-        {{form_details|crispy}}
+        {% comment %} {{form_details|crispy}} {% endcomment %}
+
+
+        {{formset.management_form}}
+        
+        {% if formset %}
+            {% for form_details in formset %}
+                <div class="card">
+                    <div class="card-body">
+                        {{form_details|crispy}}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+
+
+
         {{form|crispy}}
 
         <div class="row">

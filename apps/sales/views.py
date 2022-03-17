@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views import View, generic
 from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import formset_factory
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
@@ -25,7 +26,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
 class CreateView(LoginRequiredMixin, View):
     template = 'sales/create.html'
-    succes_url = reverse_lazy('dashboard:index')
+    succes_url = reverse_lazy('sales:index')
     
     
     def get(self,request, pk):
@@ -41,8 +42,12 @@ class CreateView(LoginRequiredMixin, View):
         form_kwargs = self.get_form_kwargs(pk=pk)
         form = SalesForm(initial=form_kwargs)
         customer = form_kwargs.get('customer')
-        form_details = SaleDetailsForm(initial=form_kwargs)
-        return render(request, self.template, {'form': form, 'form_details': form_details, 'customer':customer})
+        # form_details = SaleDetailsForm(initial=form_kwargs)
+        
+        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=2)
+        formset = SaleDetailsFormset(form_kwargs=form_kwargs)
+        
+        return render(request, self.template, {'form': form, 'customer':customer, 'formset': formset})
     
     
     @transaction.atomic
@@ -60,37 +65,59 @@ class CreateView(LoginRequiredMixin, View):
         customer = Customers.objects.get(id=customer_id)
         form_kwargs = self.get_form_kwargs(pk=customer_id)
         form = SalesForm(request.POST, initial = form_kwargs)
-        form_details = SaleDetailsForm(request.POST, initial = form_kwargs)
+        # form_details = SaleDetailsForm(request.POST, initial = form_kwargs)
+        SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=2)
+        formset = SaleDetailsFormset(request.POST,form_kwargs=form_kwargs)
         
-        if form.is_valid() and form_details.is_valid():
+        if form.is_valid() :
             # Creación de una venta
             sale = form.save()
+            
             total_price = 0
-            total_price += form_details.cleaned_data['price']
+            # print(len(formset))
+            for form_details in formset:
+                # print(f'{form_details=}')
+                print(f'{form_details.is_valid()=}')
+                if form_details.is_valid():
+                    # Creación de un detalle de venta
+                    details = form_details.save(commit=False)
+                    total_price += details.price
+                    details.sale = sale
+                    # details.product
+                    details.save()
+                    
+                    # amount = form_details.cleaned_data['amount']
+                    # total = form_details.cleaned_data['total']
+                    # price = form_details.cleaned_data['price']
+                    # product = form_details.cleaned_data['product']
             
-            amount = form_details.cleaned_data['amount']
-            total = form_details.cleaned_data['total']
-            price = form_details.cleaned_data['price']
-            product = form_details.cleaned_data['product']
             
-            
-            sale_detail = SaleDetails(
-                sale=sale,
-                product=product,
-                amount=amount,
-                total=total,
-                price=price,
-            )
-            
-            sale_detail.save()
+                    # sale_detail = SaleDetails(
+                    #     sale=sale,
+                    #     product=product,
+                    #     amount=amount,
+                    #     total=total,
+                    #     price=price,
+                    # )
+                    
+                    # sale_detail.save()
+                        
                 
+                else:
+                    print(f'{form.errors=}')
+                    print(f'{form_details.errors=}')
+                    self.form_invalid(form, formset)
+            else: 
+                print(f'{form.errors=}')
+                print(f'{formset.errors=}')
+                self.form_invalid(form, formset)
             sale.total = total_price
-            
+            sale.save()
             return redirect(self.succes_url)
         else:
             print(f'{form.errors=}')
             print(f'{form_details.errors=}')
-            return render(self.request, self.template, {'form': form, 'form_details': form_details})
+            return self.form_invalid(form, formset)
         
         
     def get_form_kwargs(self, pk, **kwargs):
@@ -121,7 +148,7 @@ class CreateView(LoginRequiredMixin, View):
     
     
     
-    def form_invalid(self, form, form_details):
+    def form_invalid(self, form, formset):
         """_summary_
 
         Args:
@@ -132,4 +159,4 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         
         """
-        return render(self.request, self.template, {'form': form, 'form_details': form_details})
+        return render(self.request, self.template, {'form': form, 'formset': formset})
