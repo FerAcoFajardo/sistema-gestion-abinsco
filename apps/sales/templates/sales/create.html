@@ -7,6 +7,17 @@
 {% endblock %}
 
 {% block content %}
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Venta para el cliente: {{customer.rfc}}</h1>
+        </div>
+    </div>
+    <br>
+
+
+
     <form method="POST">
         {% csrf_token %}
         {{form_details|crispy}}

@@ -59,8 +59,10 @@ class SalesForm(forms.ModelForm):
 # Form set to create sale details
 class SaleDetailsForm(forms.ModelForm):
     class Meta:
+        # Modelo es la tabla
         model = SaleDetails
         
+        # Estos son los campos que estarán en el formulario
         fields = [
             'sale',
             'product',
@@ -69,6 +71,7 @@ class SaleDetailsForm(forms.ModelForm):
             'price',
         ]
         
+        # Estos son los labels de los campos
         labels = {
             'sale': 'Venta',
             'product': 'Producto',
@@ -76,8 +79,13 @@ class SaleDetailsForm(forms.ModelForm):
             'total': 'Total',
         }
         
+        # Los widgets son atributos generales de los campos
+        # En esta parte se puede cambiar todos los atributos de los campos
         widgets = {
+            # Puedes cambiar el diseño de los campos aquí
             'sale': forms.HiddenInput(),
+            # Esto es un select y tiene la clase form-control de bootstrap
+            "product": forms.Select(attrs={'class': 'form-control'}),
         }
         
         

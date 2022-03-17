@@ -42,9 +42,17 @@
                     <ul class="navbar-nav text-light" id="accordionSidebar">
                         <li class="nav-item">
                             <a href="{% url 'dashboard:index' %}"
-                               class="nav-link {% if request.resolver_match.app_name == 'dashboard' %} active{% endif %}">
+                                class="nav-link {% if request.resolver_match.app_name == 'dashboard' %} active{% endif %}">
                                 <i class="fas fa-chart-bar"></i>
-                                <span>Dashboard</span>
+                                <span>Panel principal</span>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="{% url 'sales:index' %}"
+                                class="nav-link {% if request.resolver_match.app_name == 'sales' %} active{% endif %}">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Ventas</span>
                             </a>
                         </li>
                         {% comment %}

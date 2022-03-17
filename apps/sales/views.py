@@ -12,9 +12,20 @@ from pprint import pprint
 
 # Create your views here.
 
+
+class IndexView(LoginRequiredMixin, generic.ListView):
+    template_name = 'sales/index.html'
+    model = Sales
+    context_object_name = 'sales'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-id')
+
+
 class CreateView(LoginRequiredMixin, View):
     template = 'sales/create.html'
-    succes_url = reverse_lazy('sales:list')
+    succes_url = reverse_lazy('dashboard:index')
     
     
     def get(self,request, pk):
@@ -27,9 +38,11 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         """
         # print(self.get_form_kwargs(pk=pk))
-        form = SalesForm(initial=self.get_form_kwargs(pk=pk))
-        form_details = SaleDetailsForm(initial=self.get_form_kwargs(pk=pk))
-        return render(request, self.template, {'form': form, 'form_details': form_details})
+        form_kwargs = self.get_form_kwargs(pk=pk)
+        form = SalesForm(initial=form_kwargs)
+        customer = form_kwargs.get('customer')
+        form_details = SaleDetailsForm(initial=form_kwargs)
+        return render(request, self.template, {'form': form, 'form_details': form_details, 'customer':customer})
     
     
     @transaction.atomic
@@ -73,7 +86,7 @@ class CreateView(LoginRequiredMixin, View):
                 
             sale.total = total_price
             
-            return self.succes_url
+            return redirect(self.succes_url)
         else:
             print(f'{form.errors=}')
             print(f'{form_details.errors=}')
