@@ -74,7 +74,7 @@
 
     <br>
 
-    <form method="POST">
+    <form method="POST" action="." hx-posts=".">
         {% csrf_token %}
         {% comment %} {{form_details|crispy}} {% endcomment %}
 
@@ -89,6 +89,10 @@
                     </div>
                 </div>
             {% endfor %}
+
+            <div id="empty-form" class="">{{ formset.empty_form }}</div>
+            <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
+
         {% endif %}
 
         {{form|crispy}}
