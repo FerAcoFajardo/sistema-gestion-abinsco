@@ -6,6 +6,13 @@
 python manage.py runserver
 ```
 
+## Run Tests
+
+```bash
+python manage.py test
+python3 manage.py test
+```
+
 ## Run migrations
 
 ```bash
