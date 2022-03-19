@@ -83,7 +83,7 @@
         
         {% if formset %}
             {% for form_details in formset %}
-                <div class="card">
+                <div class="card mt-4 mb-4">
                     <div class="card-body">
                         {{form_details|crispy}}
                     </div>
@@ -101,7 +101,16 @@
             <button class="btn btn-primary" type="submit">Guardar</button>
         </div>
 
+<<<<<<< Updated upstream
             
+=======
+            <div class="col-md-12" style="text-align: right;margin-top: 5px;">
+                <button class="btn btn-primary btn-lg save-sale" type="submit">
+                    Guardar
+                </button>
+            </div>
+
+>>>>>>> Stashed changes
     </form>
 {% endblock %}
 
