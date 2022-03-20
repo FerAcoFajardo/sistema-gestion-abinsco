@@ -51,7 +51,7 @@ class SalesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # form_kwargs = kwargs.pop('form_kwargs')
-        customer = kwargs.pop('customer', None)
+        # customer = kwargs.pop('customer', None)
         user = kwargs.pop('user', None)
         super(SalesForm, self).__init__(*args, **kwargs)
         
@@ -60,11 +60,12 @@ class SalesForm(forms.ModelForm):
             self.fields['user'].initial = user
         
         self.fields['customer'].required = False
-        if customer is not None:
-            self.fields['customer'].initial = customer
+        # if customer is not None:
+            # self.fields['customer'].initial = customer
             
         self.fields['customer'].queryset = Customers.objects.filter(id=-1)
         
+        # self.fields['customer'].initial = Customers.objects.get(id=1)
         
 # Form set to create sale details
 class SaleDetailsForm(forms.ModelForm):

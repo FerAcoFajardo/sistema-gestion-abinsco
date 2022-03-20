@@ -36,7 +36,7 @@ class CreateView(LoginRequiredMixin, View):
     message = 'La venta se ha registrado correctamente'
     
     
-    def get(self,request, pk):
+    def get(self,request):
         """_summary_
 
         Args:
@@ -46,15 +46,27 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         """
         # print(self.get_form_kwargs(pk=pk))
-        form_kwargs = self.get_form_kwargs(pk=pk)
+        
+        form_kwargs = self.get_form_kwargs()
         form = SalesForm(initial=form_kwargs)
         customer = form_kwargs.get('customer')
-        # form_details = SaleDetailsForm(initial=form_kwargs)
+        
+        #form_details = SaleDetailsForm(initial=form_kwargs)
         
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(form_kwargs=form_kwargs)
         
-        return render(request, self.template, {'form': form, 'customer':customer, 'formset': formset})
+        context = self.get_context_data()
+        
+        context['form'] = form
+        context['formset'] = formset
+        
+        return render(request, self.template, context)
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["customer"] = Customers.objects.get(id=1) 
+        return context
     
     
     @transaction.atomic
@@ -67,12 +79,12 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
+        context = self.get_context_data(self,**kwargs)
         # Obtener el id del cliente desde el url
         customer_id = kwargs.get('pk')
         customer = Customers.objects.get(id=customer_id)
         form_kwargs = self.get_form_kwargs(pk=customer_id)
         form = SalesForm(request.POST, initial = form_kwargs)
-        # form_details = SaleDetailsForm(request.POST, initial = form_kwargs)
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(request.POST,form_kwargs=form_kwargs)
         
@@ -81,33 +93,15 @@ class CreateView(LoginRequiredMixin, View):
             sale = form.save()
             
             total_price = 0
-            # print(len(formset))
             for form_details in formset:
-                # print(f'{form_details=}')
                 print(f'{form_details.is_valid()=}')
                 if form_details.is_valid():
                     # Creación de un detalle de venta
                     details = form_details.save(commit=False)
                     total_price += details.total
                     details.sale = sale
-                    # details.product
                     details.save()
                     
-                    # amount = form_details.cleaned_data['amount']
-                    # total = form_details.cleaned_data['total']
-                    # price = form_details.cleaned_data['price']
-                    # product = form_details.cleaned_data['product']
-            
-            
-                    # sale_detail = SaleDetails(
-                    #     sale=sale,
-                    #     product=product,
-                    #     amount=amount,
-                    #     total=total,
-                    #     price=price,
-                    # )
-                    
-                    # sale_detail.save()
                         
                 
                 else:
@@ -127,7 +121,7 @@ class CreateView(LoginRequiredMixin, View):
             return self.form_invalid(form, formset)
         
         
-    def get_form_kwargs(self, pk, **kwargs):
+    def get_form_kwargs(self, **kwargs):
         """_summary_
 
         Returns:
@@ -142,16 +136,16 @@ class CreateView(LoginRequiredMixin, View):
         # form_kwargs['user'] = user
         
         
-        customer_id = pk
-        customer = Customers.objects.get(id=customer_id)
+        # customer_id = pk
+        # customer = Customers.objects.get(id=customer_id)
         user = self.request.user
-        return {'user': user, 'customer': customer}
+        return {'user': user}
     
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["pk"] = kwargs.pop('pk')
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # context["pk"] = kwargs.pop('pk')
+    #     return context
     
     
     
@@ -166,13 +160,16 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         
         """
+        context = self.get_context_data(**kwargs)
+        context['form'] = form
+        context['formset'] = formset
         print(f'{form.errors=}')
         print(f'{formset.errors=}')
-        return render(self.request, self.template, {'form': form, 'formset': formset})
+        return render(self.request, self.template, context)
     
     
 # View to get a product from id and return a json
-def get_product_price_by_id(request, pk):
+def get_product_by_id(request):
     """_summary_
 
     Args:
@@ -183,7 +180,8 @@ def get_product_price_by_id(request, pk):
         _type_: _description_
     """
     if request.method == 'GET':
-        product = Products.objects.get(id=pk)
+        id = request.GET['term']
+        product = Products.objects.get(id=id)
         data = {
             'id': product.id,
             'name': product.name,
@@ -199,13 +197,25 @@ def get_product_price_by_id(request, pk):
 # Model.objects.filter(id=id)
 # Recordar poner las views en el urls.py
 
-def get_product_by_name(request , name):
+def get_product_by_name(request):
     if request.method == 'GET':
+        try:
+            name = request.GET['term']
+        except Exception as err:
+            return JsonResponse(json.dumps(), safe= False)
+
         products = Products.objects.filter(name__icontains=name).values()
         # Cast queryset to list
         products_list = list(products)
+        data = []
+        for product in products_list:
+            format = {
+                'id': product['id'],
+                'text': product['name']
+            }
+            data.append(format)
         # Cast list to json
-        products_json = json.dumps(products_list)
+        products_json = json.dumps(data)
         #Queryset
         return JsonResponse(products_json, safe = False )
     else:
@@ -231,9 +241,11 @@ def get_customer_by_id(request, pk):
 # View to get a customer list from name and return a json
 def get_customers_by_name(request):
     if request.method == 'GET':
-        name = request.GET['term']
-        #if name is None:
-        #    return JsonResponse(json.dumps(), safe= False)
+        try:
+            name = request.GET['term']
+        except Exception as err:
+            return JsonResponse(json.dumps(''), safe= False)
+        
 
         customers = Customers.objects.filter(name__icontains=name).values()
         # Parece que en lugar de only, se puede usar values_list, el pedo es que regresa una tupla
@@ -248,7 +260,7 @@ def get_customers_by_name(request):
             
             customersFormat.append(formato)
 
-
+               
         #data = serializers.serialize("json", customers)
         data = json.dumps(customersFormat)
         # Cast queryset to list
@@ -258,7 +270,7 @@ def get_customers_by_name(request):
         #Queryset
         return JsonResponse(data, safe = False )
     else: 
-        return JsonResponse({'error': 'Only GET method is allowed', 'status':418}) 
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
 
 def get_customers(request):
     if request.method == 'GET':
@@ -269,4 +281,4 @@ def get_customers(request):
         #Queryset
         return JsonResponse(customers_json, safe = False )
     else:
-        return JsonResponse({'error': 'Only GET method is allowed', 'status':418}) 
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418})

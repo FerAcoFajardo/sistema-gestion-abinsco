@@ -19,20 +19,20 @@
 
 {% block content %}
 
-    
+
 
 <!-- Finaliza cuadro superior de la pantalla -->
 
 <br>
 
-<form method="POST" action="." hx-posts=".">
+<form method="POST" action=".">
     {% csrf_token %}
 
         {{form.customer|as_crispy_field}}
         <!-- Inicia cuadro superior de la pantalla (cliente e información extra) -->
         <div class="row mb-5">
             <div class="col-md-12">
-        
+
                 <!-- Inicia bloque "Información del cliente" -->
                 <div  id="estilo-tabla">
                     <div class="col-md-6">
@@ -56,7 +56,7 @@
                     <div class="col-md-6">            
                         <h2 id="titulo-cliente">Otra información:</h2>
                         
-                        <p>Seleccione un método de pago:</p>
+                        <p>Método de pago:</p>
         
                         <div id="radios">
                             <input type="radio" id="efectivo" name="metodo" value="efectivo"
@@ -69,7 +69,7 @@
                             <label for="tarjeta">Tarjeta</label>
                         </div>
         
-                        <p>Seleccione tipo de venta:</p>
+                        <p>Tipo de venta:</p>
         
                         <div id="radios">
                             <input type="radio" id="contado" name="tipo" value="contado" checked>
@@ -93,20 +93,32 @@
             <div id="product-form-list">
                 {% for form_details in formset %}
                     <div class="card mt-4 mb-4 product-form">
-                        <div class="card-body">
-                            {{form_details|crispy}}
-                        </div>
+                        {{form_details}}
                     </div>
                 {% endfor %}
             </div>
             
-            
-            <div id="empty-form" class="hidden">{{ formset.empty_form|crispy }}</div>
+            <div id="empty-form" class="">{{ formset.empty_form|crispy }}</div>
             <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
         {% endif %}
             
         {{form.commentaries|as_crispy_field}}
         
+        <section class="container content-section">
+            <h2 class="section-header">Venta</h2>
+            <div class="cart-row">
+                <span class="cart-item cart-header cart-column">ITEM</span>
+                <span class="cart-price cart-header cart-column">PRICE</span>
+                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            </div>
+            <div class="cart-items">
+            </div>
+            <div class="cart-total">
+                <strong class="cart-total-title">Total</strong>
+                <span class="cart-total-price">$0</span>
+            </div>
+        </section>
+
         <div class="col-md-12" style="text-align: right;margin-top: 5px;">
             <button class="btn btn-primary btn-lg save-sale" type="submit">
                 Guardar
@@ -122,7 +134,7 @@
         
 
         
-        const addMoreBtn = document.getElementById('add-form');
+/        const addMoreBtn = document.getElementById('add-form');
         const totalNewForm = document.getElementById('id_form-TOTAL_FORMS');
         
         addMoreBtn.addEventListener('click', addNewForm);
@@ -138,35 +150,52 @@
             copyEmptyFormEl.setAttribute('class', 'product-form');
             copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`);
 
-            let amount = copyEmptyFormEl.getElementById('id_form-__prefix__-amount')
-
-            amount.onInput = function(){
-                let price = copyEmptyFormEl.getElementById('id_form-__prefix__-price')
-                let total = copyEmptyFormEl.getElementById('id_form-__prefix__-total')
-                total.value = price.
-            }
-
-
-            // Add function on input to calculate total price
-            let priceInput = copyEmptyFormEl.getElementById('id_form-__prefix__-product');
-            priceInput.onInput = function(){
-                let total = copyEmptyFormEl.getElementById('id_form-__prefix__-total');
-
-                let price = copyEmptyFormEl.getElementById('id_form-__prefix__-price');
-
-                total.value = price.value * amount.value;
-            }
-
+            
             const regex = new RegExp('__prefix__', 'g');
             copyEmptyFormEl.innetHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount);
             totalNewForm.setAttribute('value', currentFormCount + 1);
             formCopyTarget.append(copyEmptyFormEl);
-        }
 
-    
-        const customer = document.getElementById('id_customer');
-        
-        let url = `http://localhost:8000/sales/get_customers_by_name/${customer.value}/`;
+            let newForm = document.getElementById(`form-${currentFormCount}`);
+
+            let amount = newForm.querySelector('#id_form-__prefix__-amount');
+            
+            amount.onInput = function(){
+                let price = newForm.querySelector('#id_form-__prefix__-price');
+                let total = newForm.querySelector('#id_form-__prefix__-total');
+                let precio_total = price.value * amount.value;
+                total.value = price.value * amount.value;
+            }
+            
+            let total = newForm.querySelector('#id_form-__prefix__-total');
+
+            // Add function on input to calculate total price
+            let priceInput = newForm.querySelector('#id_form-__prefix__-price');
+            priceInput.onInput = function(){
+                let total = newForm.querySelector('#id_form-__prefix__-total');
+
+                let price = newForm.querySelector('#id_form-__prefix__-price');
+
+                total.value = price.value * amount.value;
+            }
+
+            // Get product
+            let productSelect = newForm.querySelector('#id_form-__prefix__-product');
+            productSelect.addEventListener('change', function(){
+                // Get the price
+                let price = newForm.querySelector('#id_form-__prefix__-price');
+                let base_url = 'http://localhost:8000/sales/';
+                $.ajax({
+                    url: base_url + 'get_product/' + productSelect.value,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data){
+                        price.value = data.price;
+                    }
+                });
+            });
+
+        }
 
         $("#id_customer").select2({
             ajax: {
@@ -176,33 +205,115 @@
                 processResults: function (data) {
                     console.log(typeof data);
                     // Transforms the top-level key of the response object from 'items' to 'results'
-                    var porfn= JSON.parse(data)
+                    var dataObject = JSON.parse(data)
                     return {
                         
-                        results: porfn
+                        results: dataObject
                     };
                 }
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
         });
 
-        $("#id_product").select2({
+        $("#id_form-__prefix__-product").select2({
             ajax: {
-                url: `http://localhost:8000/sales/get_customers_by_name/${customer.value}`,
+                url: `http://localhost:8000/sales/get_product`,
                 type: 'GET',
                 dataType: 'json',
                 processResults: function (data) {
-                    console.log(data);
+                    var dataObject = JSON.parse(data)
                     // Transforms the top-level key of the response object from 'items' to 'results'
                     return {
-                        results: data.items
+                        results: dataObject
                     };
                 }
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
         });
-
+        
+        
     </script>
 
+    <script>
+        function removeCartItem(event) {
+            var buttonClicked = event.target
+            buttonClicked.parentElement.parentElement.remove()
+            updateCartTotal()
+        }
+
+        function quantityChanged(event) {
+            var input = event.target
+            if (isNaN(input.value) || input.value <= 0) {
+                input.value = 1
+            }
+            updateCartTotal()
+        }
+
+        function addToCartClicked(event) {
+            var button = event.target
+            var shopItem = button.parentElement.parentElement
+            var title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
+            var price = shopItem.getElementsByClassName('shop-item-price')[0].innerText
+            var imageSrc = shopItem.getElementsByClassName('shop-item-image')[0].src
+            addItemToCart(title, price, imageSrc)
+            updateCartTotal()
+        }
+
+        let button = document.getElementById('add-form')
+        button.addEventListener("click", () => {
+            let product = document.getElementById('id_form-__prefix__-product')
+            $.ajax({
+                    url: `http://localhost:8000/sales/get_product/${product.value}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data){
+                        addItemToCart(data.name, data.price, data.image)
+                    }
+                });
+        });
+
+        function addItemToCart(title, price, imageSrc) {
+            var cartRow = document.createElement('div')
+            cartRow.classList.add('cart-row')
+            var cartItems = document.getElementsByClassName('cart-items')[0]
+            var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+            for (var i = 0; i < cartItemNames.length; i++) {
+                if (cartItemNames[i].innerText == title) {
+                    alert('This item is already added to the cart')
+                    return
+                }
+            }
+            var cartRowContents = `
+                <div class="cart-item cart-column">
+                    <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
+                    <span class="cart-item-title">${title}</span>
+                </div>
+                <span class="cart-price cart-column">${price}</span>
+                <div class="cart-quantity cart-column">
+                    <input class="cart-quantity-input" type="number" value="1">
+                    <button class="btn btn-danger" type="button">REMOVE</button>
+                </div>`
+            cartRow.innerHTML = cartRowContents
+            cartItems.append(cartRow)
+            cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
+            cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
+        }
+
+        function updateCartTotal() {
+            var cartItemContainer = document.getElementsByClassName('cart-items')[0]
+            var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+            var total = 0
+            for (var i = 0; i < cartRows.length; i++) {
+                var cartRow = cartRows[i]
+                var priceElement = cartRow.getElementsByClassName('cart-price')[0]
+                var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
+                var price = parseFloat(priceElement.innerText.replace('$', ''))
+                var quantity = quantityElement.value
+                total = total + (price * quantity)
+            }
+            total = Math.round(total * 100) / 100
+            document.getElementsByClassName('cart-total-price')[0].innerText = '$' + total
+        }
+    </script>
 {% endblock %}
 

@@ -11,11 +11,10 @@ def tast_product_creation():
         current_price = 25.00
         in_storage =  15
         code = 'ABC1
-
         category = "Tools"
         unity = ''
     )
     assert.product.name == "Soldadura"
 
 
-    )ngdef teang
+    
