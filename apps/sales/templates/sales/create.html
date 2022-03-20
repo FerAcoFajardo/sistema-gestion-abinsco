@@ -260,6 +260,7 @@
         }
 
         let button = document.getElementById('add-form')
+
         button.addEventListener("click", () => {
             let product = document.getElementById('id_form-__prefix__-product')
             $.ajax({
@@ -279,7 +280,11 @@
             var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
             for (var i = 0; i < cartItemNames.length; i++) {
                 if (cartItemNames[i].innerText == title) {
-                    alert('This item is already added to the cart')
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ya agregaste ese producto!'
+                    })
                     return
                 }
             }
@@ -297,6 +302,7 @@
             cartItems.append(cartRow)
             cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
             cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
+            updateCartTotal()
         }
 
         function updateCartTotal() {
