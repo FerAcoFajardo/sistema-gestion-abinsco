@@ -134,7 +134,7 @@
         
 
         
-/        const addMoreBtn = document.getElementById('add-form');
+/*        const addMoreBtn = document.getElementById('add-form');
         const totalNewForm = document.getElementById('id_form-TOTAL_FORMS');
         
         addMoreBtn.addEventListener('click', addNewForm);
@@ -196,7 +196,7 @@
             });
 
         }
-
+*/
         $("#id_customer").select2({
             ajax: {
                 url: `http://localhost:8000/sales/get_customers_by_name`,
@@ -217,7 +217,7 @@
 
         $("#id_form-__prefix__-product").select2({
             ajax: {
-                url: `http://localhost:8000/sales/get_product`,
+                url: `http://localhost:8000/sales/get_products_by_name`,
                 type: 'GET',
                 dataType: 'json',
                 processResults: function (data) {

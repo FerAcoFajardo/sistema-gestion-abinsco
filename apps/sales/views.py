@@ -169,7 +169,7 @@ class CreateView(LoginRequiredMixin, View):
     
     
 # View to get a product from id and return a json
-def get_product_by_id(request):
+def get_product_by_id(request, pk):
     """_summary_
 
     Args:
@@ -180,13 +180,14 @@ def get_product_by_id(request):
         _type_: _description_
     """
     if request.method == 'GET':
-        id = request.GET['term']
-        product = Products.objects.get(id=id)
+        
+        product = Products.objects.get(id=pk)
         data = {
             'id': product.id,
             'name': product.name,
             'price': product.current_price,
             'stock': product.in_storage,
+            'image': product.image.url,
         }
         return JsonResponse(data)
     else:
@@ -197,12 +198,12 @@ def get_product_by_id(request):
 # Model.objects.filter(id=id)
 # Recordar poner las views en el urls.py
 
-def get_product_by_name(request):
+def get_products_by_name(request):
     if request.method == 'GET':
         try:
             name = request.GET['term']
         except Exception as err:
-            return JsonResponse(json.dumps(), safe= False)
+            return JsonResponse(json.dumps(''), safe= False)
 
         products = Products.objects.filter(name__icontains=name).values()
         # Cast queryset to list

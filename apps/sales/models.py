@@ -4,13 +4,14 @@ from django.forms import FloatField
 
 # Create your models here.
 
+
 class Sales(models.Model):
     date = models.DateField(auto_now=True, auto_now_add=False)
     commentaries = models.TextField(null=True, blank=True)
     customer = models.ForeignKey('customers.Customers', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     total = models.FloatField(null=True, blank=True)
-    
+
     class Meta:
         db_table = 'sales' # this is the name of the table in the database
         verbose_name = 'Sale' # this is the name of the model in the admin site
