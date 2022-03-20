@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import formset_factory
 from django.http import JsonResponse
 from django.contrib import messages
+from django.core import serializers
+
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
@@ -13,6 +15,7 @@ from ..customers.models import Customers
 from ..products.models import Products
 
 from pprint import pprint
+import json
 
 # Create your views here.
 
@@ -121,8 +124,6 @@ class CreateView(LoginRequiredMixin, View):
             messages.success(request,self.message)
             return redirect(self.succes_url)
         else:
-            print(f'{form.errors=}')
-            print(f'{form_details.errors=}')
             return self.form_invalid(form, formset)
         
         
@@ -165,11 +166,13 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         
         """
+        print(f'{form.errors=}')
+        print(f'{formset.errors=}')
         return render(self.request, self.template, {'form': form, 'formset': formset})
     
     
-# View to get a procuct from id and return a json
-def get_product(request, pk):
+# View to get a product from id and return a json
+def get_product_price_by_id(request, pk):
     """_summary_
 
     Args:
@@ -182,11 +185,88 @@ def get_product(request, pk):
     if request.method == 'GET':
         product = Products.objects.get(id=pk)
         data = {
+            'id': product.id,
             'name': product.name,
             'price': product.current_price,
             'stock': product.in_storage,
-            # 'description': product.description,
         }
         return JsonResponse(data)
     else:
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
+
+
+# Para consultar mas de un registro, se utiliza lo siguiente
+# Model.objects.filter(id=id)
+# Recordar poner las views en el urls.py
+
+def get_product_by_name(request , name):
+    if request.method == 'GET':
+        products = Products.objects.filter(name__icontains=name).values()
+        # Cast queryset to list
+        products_list = list(products)
+        # Cast list to json
+        products_json = json.dumps(products_list)
+        #Queryset
+        return JsonResponse(products_json, safe = False )
+    else:
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418})    
+
+# View to get a customer from id and return a json
+def get_customer_by_id(request, pk):
+    if request.method == 'GET':
+        customer = Customers.objects.get(id=pk)
+        
+        data = {
+            'name': customer.name,
+            'rfc': customer.rfc,
+            'address': customer.address,
+            'phone': customer.phone,
+            'email': customer.email,
+        }
+        
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
+
+# View to get a customer list from name and return a json
+def get_customers_by_name(request):
+    if request.method == 'GET':
+        name = request.GET['term']
+        #if name is None:
+        #    return JsonResponse(json.dumps(), safe= False)
+
+        customers = Customers.objects.filter(name__icontains=name).values()
+        # Parece que en lugar de only, se puede usar values_list, el pedo es que regresa una tupla
+        customers = list(customers)
+        
+        customersFormat = []
+        for customer in customers:
+            formato = {
+                'id': customer['id'],
+                'text': customer['name']
+            }
+            
+            customersFormat.append(formato)
+
+
+        #data = serializers.serialize("json", customers)
+        data = json.dumps(customersFormat)
+        # Cast queryset to list
+        # customers_list = list(customers)
+        # Cast list to json
+        # customers_json = json.dumps(customers_list)
+        #Queryset
+        return JsonResponse(data, safe = False )
+    else: 
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418}) 
+
+def get_customers(request):
+    if request.method == 'GET':
+        customers = Customers.objects.all().values()
+        customers_list = list(customers)
+        # Cast list to json
+        customers_json = json.dumps(customers_list)
+        #Queryset
+        return JsonResponse(customers_json, safe = False )
+    else:
+        return JsonResponse({'error': 'Only GET method is allowed', 'status':418}) 

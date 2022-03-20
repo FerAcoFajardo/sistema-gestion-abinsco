@@ -9,183 +9,198 @@
 {% block css %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'assets/css/sales.css' %}">
+
+    <style>
+        .hidden{
+            display: none;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 
-    <!-- Inicia cuadro superior de la pantalla (cliente e información extra) -->
-    <div class="row">
-        <div class="col-md-12">
+    
 
-            <!-- Inicia bloque "Información del cliente" -->
-            <div  id="estilo-tabla">
-                <div class="col-md-6">
-                    <h2 id="titulo-cliente">Información del cliente:</h2>
-                    <dl>
-                        <dt>Nombre</dt>
-                        <dd>{{customer.name}}</dd>
-                        <dt>RFC</dt>
-                        <dd>{{customer.rfc}}</dd>
-                        <dt>Dirección</dt>
-                        <dd>{{customer.address}}</dd>
-                        <dt>Teléfono</dt>
-                        <dd>{{customer.phone}}</dd>
-                        <dt>Correo</dt>
-                        <dd>{{customer.email}}</dd>
-                    </dl>
+<!-- Finaliza cuadro superior de la pantalla -->
+
+<br>
+
+<form method="POST" action="." hx-posts=".">
+    {% csrf_token %}
+
+        {{form.customer|as_crispy_field}}
+        <!-- Inicia cuadro superior de la pantalla (cliente e información extra) -->
+        <div class="row mb-5">
+            <div class="col-md-12">
+        
+                <!-- Inicia bloque "Información del cliente" -->
+                <div  id="estilo-tabla">
+                    <div class="col-md-6">
+                        <h2 id="titulo-cliente">Información del cliente:</h2>
+                        <dl>
+                            <dt>Nombre</dt>
+                            <dd>{{customer.name}}</dd>
+                            <dt>RFC</dt>
+                            <dd>{{customer.rfc}}</dd>
+                            <dt>Dirección</dt>
+                            <dd>{{customer.address}}</dd>
+                            <dt>Teléfono</dt>
+                            <dd>{{customer.phone}}</dd>
+                            <dt>Correo</dt>
+                            <dd>{{customer.email}}</dd>
+                        </dl>
+                    </div>
+                    <!-- Finaliza bloque "Información del cliente" -->
+        
+                    <!-- Inicia bloque "Otra información" -->
+                    <div class="col-md-6">            
+                        <h2 id="titulo-cliente">Otra información:</h2>
+                        
+                        <p>Seleccione un método de pago:</p>
+        
+                        <div id="radios">
+                            <input type="radio" id="efectivo" name="metodo" value="efectivo"
+                                    checked>
+                            <label for="efectivo">Efectivo</label>
+                        </div>
+                        <div id="radios">
+                            <input type="radio" id="tarjeta" name="metodo" value="tarjeta"
+                                    >
+                            <label for="tarjeta">Tarjeta</label>
+                        </div>
+        
+                        <p>Seleccione tipo de venta:</p>
+        
+                        <div id="radios">
+                            <input type="radio" id="contado" name="tipo" value="contado" checked>
+                            <label for="contado">Contado</label>
+                        </div>
+                        <div id="radios">
+                            <input type="radio" id="credito" name="tipo" value="credito">
+                            <label for="credito">Credito</label>
+                        </div>
+                    </div>
+                    <!-- Finaliza bloque "Otra información" -->                
                 </div>
-                <!-- Finaliza bloque "Información del cliente" -->
-
-                <!-- Inicia bloque "Otra información" -->
-                <div class="col-md-6">            
-                    <h2 id="titulo-cliente">Otra información:</h2>
-                    
-                    <p>Seleccione un método de pago:</p>
-
-                    <div id="radios">
-                        <input type="radio" id="efectivo" name="metodo" value="efectivo"
-                                checked>
-                        <label for="efectivo">Efectivo</label>
-                    </div>
-                    <div id="radios">
-                        <input type="radio" id="tarjeta" name="metodo" value="tarjeta"
-                                >
-                        <label for="tarjeta">Tarjeta</label>
-                    </div>
-
-                    <p>Seleccione tipo de venta:</p>
-
-                    <div id="radios">
-                        <input type="radio" id="contado" name="tipo" value="contado"
-                                checked>
-                        <label for="contado">Contado</label>
-                    </div>
-                    <div id="radios">
-                        <input type="radio" id="credito" name="tipo" value="credito"
-                                >
-                        <label for="credito">Credito</label>
-                    </div>
-                </div>
-                <!-- Finaliza bloque "Otra información" -->                
             </div>
         </div>
-    </div>
-    <!-- Finaliza cuadro superior de la pantalla -->
-
-    <br>
-
-    <form method="POST" action="." hx-posts=".">
-        {% csrf_token %}
-        {% comment %} {{form_details|crispy}} {% endcomment %}
-
+    
+        
 
         {{formset.management_form}}
         
         {% if formset %}
-            {% for form_details in formset %}
-                <div class="card mt-4 mb-4">
-                    <div class="card-body">
-                        {{form_details|crispy}}
+            <div id="product-form-list">
+                {% for form_details in formset %}
+                    <div class="card mt-4 mb-4 product-form">
+                        <div class="card-body">
+                            {{form_details|crispy}}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
             
             
-            <div id="empty-form" class="">{{ formset.empty_form }}</div>
+            <div id="empty-form" class="hidden">{{ formset.empty_form|crispy }}</div>
+            <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
         {% endif %}
             
-        {{form|crispy}}
+        {{form.commentaries|as_crispy_field}}
         
-        <div class="btn-group-justified" role="group" aria-label="...">
-            <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
-            <button class="btn btn-primary" type="submit">Guardar</button>
+        <div class="col-md-12" style="text-align: right;margin-top: 5px;">
+            <button class="btn btn-primary btn-lg save-sale" type="submit">
+                Guardar
+            </button>
         </div>
 
-<<<<<<< Updated upstream
-            
-=======
-            <div class="col-md-12" style="text-align: right;margin-top: 5px;">
-                <button class="btn btn-primary btn-lg save-sale" type="submit">
-                    Guardar
-                </button>
-            </div>
-
->>>>>>> Stashed changes
     </form>
 {% endblock %}
 
 {% block js %}
 
     <script>
-        let form_counter = {{formset|length}};
-        console.log(form_counter);
+        
 
-        // For to iterate over the formset
-        for (let i = 0; i < form_counter; i++) {
-            // get the first form amount
-            let amount = document.getElementById('id_form-' + i + '-amount');
-
-            // set onInput function to calculate total on amount
-            amount.oninput = function () {
-                // get the total
-                let total = document.getElementById('id_form-' + i + '-total');
-
-                // get price
-                let price = document.getElementById('id_form-' + i + '-price');
-
-                // calculate total
-                total.value = price.value * amount.value;
-
-            };
+        
+        const addMoreBtn = document.getElementById('add-form');
+        const totalNewForm = document.getElementById('id_form-TOTAL_FORMS');
+        
+        addMoreBtn.addEventListener('click', addNewForm);
+        function addNewForm(event){
+            if(event){
+                event.preventDefault();
+            }
             
-            let price = document.getElementById('id_form-' + i + '-price');
-            // set onInput function to calculate total on amount
-            price.oninput = function () {
-                // get the total
-                let total = document.getElementById('id_form-' + i + '-total');
+            const currentProductsForms = document.getElementsByClassName('product-form');
+            const currentFormCount = currentProductsForms.length;
+            const formCopyTarget = document.getElementById('product-form-list');
+            const copyEmptyFormEl = document.getElementById('empty-form').cloneNode(true);
+            copyEmptyFormEl.setAttribute('class', 'product-form');
+            copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`);
 
-                // gget price
-//                let amount = document.getElementById('id_form-' + i + '-price');
+            let amount = copyEmptyFormEl.getElementById('id_form-__prefix__-amount')
 
-                // calculate total
+            amount.onInput = function(){
+                let price = copyEmptyFormEl.getElementById('id_form-__prefix__-price')
+                let total = copyEmptyFormEl.getElementById('id_form-__prefix__-total')
+                total.value = price.
+            }
+
+
+            // Add function on input to calculate total price
+            let priceInput = copyEmptyFormEl.getElementById('id_form-__prefix__-product');
+            priceInput.onInput = function(){
+                let total = copyEmptyFormEl.getElementById('id_form-__prefix__-total');
+
+                let price = copyEmptyFormEl.getElementById('id_form-__prefix__-price');
+
                 total.value = price.value * amount.value;
+            }
 
-            };
-
-            // get product from selectElement
-            let product = document.getElementById('id_form-' + i + '-product');
-            // add evenLister on change to get the product and set the price
-            product.addEventListener('change', function () {
-                // get the price
-                let price = document.getElementById('id_form-' + i + '-price');
-                // get the product
-                // Ajax call to get_product/<int:pk>/
-                let base_url = "http://localhost:8000/"
-                $.ajax({
-                    url: `${base_url}sales/get_product/${product.value}/`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        // set the price
-                        console.log(data);
-                        price.value = data.price;
-                    }
-                });
-            });
-
+            const regex = new RegExp('__prefix__', 'g');
+            copyEmptyFormEl.innetHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount);
+            totalNewForm.setAttribute('value', currentFormCount + 1);
+            formCopyTarget.append(copyEmptyFormEl);
         }
 
-        const selectElement = document.getElementById('id_product');
+    
+        const customer = document.getElementById('id_customer');
+        
+        let url = `http://localhost:8000/sales/get_customers_by_name/${customer.value}/`;
 
-        selectElement.addEventListener('change', (event) => {
-            price = document.getElementById("id_price");
-            price.value = event.target.value;
+        $("#id_customer").select2({
+            ajax: {
+                url: `http://localhost:8000/sales/get_customers_by_name`,
+                type: 'GET',
+                dataType: 'json',
+                processResults: function (data) {
+                    console.log(typeof data);
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    var porfn= JSON.parse(data)
+                    return {
+                        
+                        results: porfn
+                    };
+                }
+                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+            }
         });
 
-        cons addMoreBtn = document.getElementById('add-form');
-
-
-
+        $("#id_product").select2({
+            ajax: {
+                url: `http://localhost:8000/sales/get_customers_by_name/${customer.value}`,
+                type: 'GET',
+                dataType: 'json',
+                processResults: function (data) {
+                    console.log(data);
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: data.items
+                    };
+                }
+                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+            }
+        });
 
     </script>
 

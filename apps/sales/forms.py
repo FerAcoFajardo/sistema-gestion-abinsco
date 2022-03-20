@@ -14,6 +14,10 @@ from ..products.models import (
         Categories
     )
 
+from ..customers.models import (
+    Customers,
+)
+
 
 from pprint import pprint
 
@@ -38,8 +42,10 @@ class SalesForm(forms.ModelForm):
         }
     
         widgets = {
-            'user': forms.HiddenInput(),
-            'customer': forms.HiddenInput(),
+            'user': forms.HiddenInput(), 
+            # 'customer': forms.HiddenInput(),
+            # campo de los comentarios, aqui en widgets se agregan este tipo de cosas
+            'commentaries': forms.Textarea(attrs={'class': ''}),
         }
 
 
@@ -56,6 +62,8 @@ class SalesForm(forms.ModelForm):
         self.fields['customer'].required = False
         if customer is not None:
             self.fields['customer'].initial = customer
+            
+        self.fields['customer'].queryset = Customers.objects.filter(id=-1)
         
         
 # Form set to create sale details
@@ -72,10 +80,11 @@ class SaleDetailsForm(forms.ModelForm):
         ]
         
         labels = {
-            'sale': 'Venta',
+            # 'sale': 'Venta',
             'product': 'Producto',
             'amount': 'Cantidad',
             'total': 'Total',
+            'price': 'Precio',
         }
         
         widgets = {

@@ -3,7 +3,7 @@ from django.db import models
 
 class Customers(models.Model):
     name = models.CharField(max_length=100, null= False, blank=False)
-    rfc = models.CharField(max_length=13, null=False, blank=False)
+    rfc = models.CharField(max_length=13, null=False, blank=False, unique=True)
     address = models.CharField(max_length=200, null=False, blank=True)
     phone = models.CharField(max_length=18, null=False, blank=True)
     email = models.EmailField(null=False, blank=True)
