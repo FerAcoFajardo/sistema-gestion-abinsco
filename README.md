@@ -9,8 +9,8 @@ python manage.py runserver
 ## Run Tests
 
 ```bash
-python manage.py test
-python3 manage.py test
+python manage.py test apps.sales.tests
+python3 manage.py test apps.sales.tests
 ```
 
 ## Run migrations

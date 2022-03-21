@@ -245,7 +245,8 @@ def get_customers_by_name(request):
         try:
             name = request.GET['term']
         except Exception as err:
-            return JsonResponse(json.dumps(''), safe= False)
+            #return JsonResponse(json.dumps(''), safe= False)
+            name = ""
         
 
         customers = Customers.objects.filter(name__icontains=name).values()
