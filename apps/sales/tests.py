@@ -36,22 +36,33 @@ class SalesTestCase(TestCase):
 
         assert 'admin' in driver.page_source
 
-    def test_sales(self):
+    def test_normal_sale_without_credit(self):
         driver = self.driver
 
         driver.get('http://localhost:8000/sales/create')
         
 
-        select_element = driver.find_element_by_id('id_form-__prefix__-product')
-        select_object = Select(select_element)
-
-        select_object.select_by_value('1')
+        select_product = Select(driver.find_element_by_id('id_form-__prefix__-product'))
 
         btn_add_product = driver.find_element_by_id('add-form')
 
+        select_product.select_by_value('1')
+
         btn_add_product.send_keys(Keys.RETURN)
 
+
+        select_product.select_by_value('2')
+
+        btn_add_product.send_keys(Keys.RETURN)
+
+        quantity_first_product = driver.find_element_by_id('cart-index-0')
+
+        quantity_first_product.send_keys(Keys.ARROW_UP)
+        quantity_first_product.send_keys(Keys.ARROW_UP)
+
         submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
 
         time.sleep(5)
 
