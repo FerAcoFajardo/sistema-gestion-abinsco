@@ -141,8 +141,11 @@ class CreateView(LoginRequiredMixin, View):
         
         """
         messages.error(self.request, 'No se pudo registrar la venta debido a un error inesperado, por favor vuelva a intentar') 
+        context = {}
+        context['form'] = form
+        context['formset'] = formset
         
-        return render()
+        return render(self.request, self.template, context)
     
     
 # View to get a product from id and return a json
