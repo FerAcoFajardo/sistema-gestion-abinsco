@@ -3,12 +3,16 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.chrome.options import Options
 
 class SalesTestCase(TestCase):
     
     @classmethod
     def setUpClass(cls):
-        cls.driver = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--headless')
+        cls.driver = webdriver.Chrome(chrome_options=chrome_options)
         cls.driver.maximize_window() # For maximizing window
         driver = cls.driver
 
