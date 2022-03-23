@@ -32,13 +32,13 @@ class SalesForm(forms.ModelForm):
             'customer',
             'user',
             'commentaries',
+            'total',
         ]
         
         labels = {
             # 'date': 'Fecha',
             'commentaries': 'Comentarios',
             'customer': 'Cliente',
-            'user': 'Usuario',
         }
     
         widgets = {
@@ -46,26 +46,19 @@ class SalesForm(forms.ModelForm):
             # 'customer': forms.HiddenInput(),
             # campo de los comentarios, aqui en widgets se agregan este tipo de cosas
             'commentaries': forms.Textarea(attrs={'class': ''}),
+            'total': forms.NumberInput(attrs={'class': 'cart-total-price', 'readonly': 'readonly', 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
         }
 
 
     def __init__(self, *args, **kwargs):
-        # form_kwargs = kwargs.pop('form_kwargs')
-        # customer = kwargs.pop('customer', None)
-        user = kwargs.pop('user', None)
+        
         super(SalesForm, self).__init__(*args, **kwargs)
         
-        self.fields['user'].required = True
-        if user is not None:
-            self.fields['user'].initial = user
-        
         self.fields['customer'].required = False
-        # if customer is not None:
-            # self.fields['customer'].initial = customer
             
         self.fields['customer'].queryset = Customers.objects.filter(id=-1)
         
-        # self.fields['customer'].initial = Customers.objects.get(id=1)
+        
         
 # Form set to create sale details
 class SaleDetailsForm(forms.ModelForm):
@@ -90,6 +83,10 @@ class SaleDetailsForm(forms.ModelForm):
         
         widgets = {
             'sale': forms.HiddenInput(),
+            # Inmutable input            
+            'price': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'cart-price cart-column'}),
+            'product': forms.HiddenInput(attrs={'class': 'cart-item-title', 'type': 'hidden'}),
+            'amount': forms.NumberInput(attrs={'class': 'cart-quantity-input', 'min': '1', 'value': '1'}),
         }
         
         

@@ -48,15 +48,16 @@ class CreateView(LoginRequiredMixin, View):
         # print(self.get_form_kwargs(pk=pk))
         
         form_kwargs = self.get_form_kwargs()
-        form = SalesForm(initial=form_kwargs)
-        customer = form_kwargs.get('customer')
+        form = SalesForm(initial={'user': self.request.user})
+        # customer = form_kwargs.get('customer')
         
         #form_details = SaleDetailsForm(initial=form_kwargs)
         
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(form_kwargs=form_kwargs)
         
-        context = self.get_context_data()
+        # context = self.get_context_data()
+        context = {}
         
         context['form'] = form
         context['formset'] = formset
@@ -66,6 +67,7 @@ class CreateView(LoginRequiredMixin, View):
     def get_context_data(self, **kwargs):
         context = {}
         context["customer"] = Customers.objects.get(id=1) 
+        context["user"] = self.request.user 
         return context
     
     
@@ -79,24 +81,27 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
-        context = self.get_context_data(self,**kwargs)
+        # context = self.get_context_data(self,**kwargs)
         # Obtener el id del cliente desde el url
-        customer_id = kwargs.get('pk')
-        customer = Customers.objects.get(id=customer_id)
-        form_kwargs = self.get_form_kwargs(pk=customer_id)
-        form = SalesForm(request.POST, initial = form_kwargs)
+        # customer_id = request.POST.get('customer')
+        # print(f'{customer_id=}')
+        form_kwargs = self.get_form_kwargs()
+        form = SalesForm(request.POST)
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
-        formset = SaleDetailsFormset(request.POST,form_kwargs=form_kwargs)
+        formset = SaleDetailsFormset(request.POST)
         
-        if form.is_valid() :
+        
+        if form.is_valid() and formset.is_valid():
             # Creación de una venta
-            sale = form.save()
-            
+            sale = Sales.objects.create(
+                commentaries = form.cleaned_data['commentaries'],
+                user = self.request.user,
+                customer = form.cleaned_data['customer'] if form.cleaned_data['customer'] else Customers.objects.get(id=1),
+            )
             total_price = 0
+            print(formset)
             for form_details in formset:
-                print(f'{form_details.is_valid()=}')
                 if form_details.is_valid():
-                    # Creación de un detalle de venta
                     details = form_details.save(commit=False)
                     total_price += details.total
                     details.sale = sale
@@ -105,12 +110,8 @@ class CreateView(LoginRequiredMixin, View):
                         
                 
                 else:
-                    print(f'{form.errors=}')
-                    print(f'{form_details.errors=}')
                     self.form_invalid(form, formset)
             else: 
-                print(f'{form.errors=}')
-                print(f'{formset.errors=}')
                 self.form_invalid(form, formset)
             sale.total = total_price
             sale.save()
@@ -127,25 +128,10 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
-        # form_kwargs = super(CreateView, self).get_form_kwargs(**kwargs)
-        # form_kwargs = {}
-        # print(customer_id)
-        # print(pk)
-        # form_kwargs['customer'] = customer
-        # print(f'{user=}')
-        # form_kwargs['user'] = user
-        
-        
         # customer_id = pk
         # customer = Customers.objects.get(id=customer_id)
         user = self.request.user
         return {'user': user}
-    
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context["pk"] = kwargs.pop('pk')
-    #     return context
     
     
     
@@ -160,7 +146,8 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         
         """
-        context = self.get_context_data(**kwargs)
+        # context = self.get_context_data(self)
+        context = {}
         context['form'] = form
         context['formset'] = formset
         print(f'{form.errors=}')
@@ -194,9 +181,6 @@ def get_product_by_id(request, pk):
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
 
 
-# Para consultar mas de un registro, se utiliza lo siguiente
-# Model.objects.filter(id=id)
-# Recordar poner las views en el urls.py
 
 def get_products_by_name(request):
     if request.method == 'GET':

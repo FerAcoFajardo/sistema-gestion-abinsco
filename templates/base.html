@@ -7,7 +7,7 @@
         <!-- Favicon and title -->
         <link rel="icon"
               type="image/x-icon"
-              href="https://w7.pngwing.com/pngs/672/907/png-transparent-favicon-buggi-trademark-logo-circle.png">
+              href="https://imgs.search.brave.com/iPXkMe5w2L14GcWuZt-Eml85CCzIQ9Wf3_mUB0LKfl8/rs:fit:938:980:1/g:ce/aHR0cDovL2NsaXBh/cnQtbGlicmFyeS5j/b20vaW1hZ2VzX2sv/YmxhY2tzbWl0aC1o/YW1tZXItc2lsaG91/ZXR0ZS9ibGFja3Nt/aXRoLWhhbW1lci1z/aWxob3VldHRlLTku/cG5n">
         <title>
             {% block title %}{% endblock %}
         </title>
@@ -295,7 +295,7 @@
                                    href="#">
                                     <span class="d-none d-lg-inline me-2 text-gray-600 small">{{ user.username }}</span>
                                     <img class="border rounded-circle img-profile"
-                                         src="{% if user.image.url is not None %} {{ user.image.url }} {% else %} /media/profiles/generic/profile_happy.png{% endif %}">
+                                         src="{% if user.image.url is not None %} {{ user.image.url }} {% else %} /media/profiles/generic/default_profile.jpeg{% endif %}">
                                 </a>
                                 <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                                     <a class="dropdown-item"

@@ -97,8 +97,16 @@
                     </div>
                 {% endfor %}
             </div>
-            
-            <div id="empty-form" class="">{{ formset.empty_form|crispy }}</div>
+            <div id="empty-form" class="">
+
+                <input type="hidden" name="form-sale" id="id_form-sale"> 
+                <div id="div_id_form-product" class="mb-3"> 
+                    <label for="id_form-product" class="form-label requiredField">Producto<span class="asteriskField">*</span> </label> 
+                    <select name="form-product" class="cart-item-title select form-select" id="id_form-product"> 
+                    </select>
+                </div> 
+            </div>
+
             <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
         {% endif %}
             
@@ -110,12 +118,13 @@
                 <span class="cart-item cart-header cart-column">ITEM</span>
                 <span class="cart-price cart-header cart-column">PRICE</span>
                 <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+                <span class="cart-quantity cart-header cart-column">Total</span>
             </div>
-            <div class="cart-items">
+            <div class="cart-items form-empty">
             </div>
             <div class="cart-total">
                 <strong class="cart-total-title">Total</strong>
-                <span class="cart-total-price">$0</span>
+                {{form.total}}
             </div>
         </section>
 
@@ -131,72 +140,6 @@
 {% block js %}
 
     <script>
-        
-
-        
-/*        const addMoreBtn = document.getElementById('add-form');
-        const totalNewForm = document.getElementById('id_form-TOTAL_FORMS');
-        
-        addMoreBtn.addEventListener('click', addNewForm);
-        function addNewForm(event){
-            if(event){
-                event.preventDefault();
-            }
-            
-            const currentProductsForms = document.getElementsByClassName('product-form');
-            const currentFormCount = currentProductsForms.length;
-            const formCopyTarget = document.getElementById('product-form-list');
-            const copyEmptyFormEl = document.getElementById('empty-form').cloneNode(true);
-            copyEmptyFormEl.setAttribute('class', 'product-form');
-            copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`);
-
-            
-            const regex = new RegExp('__prefix__', 'g');
-            copyEmptyFormEl.innetHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount);
-            totalNewForm.setAttribute('value', currentFormCount + 1);
-            formCopyTarget.append(copyEmptyFormEl);
-
-            let newForm = document.getElementById(`form-${currentFormCount}`);
-
-            let amount = newForm.querySelector('#id_form-__prefix__-amount');
-            
-            amount.onInput = function(){
-                let price = newForm.querySelector('#id_form-__prefix__-price');
-                let total = newForm.querySelector('#id_form-__prefix__-total');
-                let precio_total = price.value * amount.value;
-                total.value = price.value * amount.value;
-            }
-            
-            let total = newForm.querySelector('#id_form-__prefix__-total');
-
-            // Add function on input to calculate total price
-            let priceInput = newForm.querySelector('#id_form-__prefix__-price');
-            priceInput.onInput = function(){
-                let total = newForm.querySelector('#id_form-__prefix__-total');
-
-                let price = newForm.querySelector('#id_form-__prefix__-price');
-
-                total.value = price.value * amount.value;
-            }
-
-            // Get product
-            let productSelect = newForm.querySelector('#id_form-__prefix__-product');
-            productSelect.addEventListener('change', function(){
-                // Get the price
-                let price = newForm.querySelector('#id_form-__prefix__-price');
-                let base_url = 'http://localhost:8000/sales/';
-                $.ajax({
-                    url: base_url + 'get_product/' + productSelect.value,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data){
-                        price.value = data.price;
-                    }
-                });
-            });
-
-        }
-*/
         $("#id_customer").select2({
             ajax: {
                 url: `http://localhost:8000/sales/get_customers_by_name`,
@@ -215,7 +158,7 @@
             }
         });
 
-        $("#id_form-__prefix__-product").select2({
+        $("#id_form-product").select2({
             ajax: {
                 url: `http://localhost:8000/sales/get_products_by_name`,
                 type: 'GET',
@@ -262,7 +205,7 @@
         let button = document.getElementById('add-form')
 
         button.addEventListener("click", () => {
-            let product = document.getElementById('id_form-__prefix__-product')
+            let product = document.getElementById('id_form-product')
             $.ajax({
                     url: `http://localhost:8000/sales/get_product/${product.value}`,
                     type: 'GET',
@@ -288,20 +231,55 @@
                     return
                 }
             }
+            
+            
+            let total_form = document.querySelector('#id_form-TOTAL_FORMS')
+
+            console.log(total_form.value)
+
             var cartRowContents = `
-                <div class="cart-item cart-column">
+                        <div class="cart-item form-empty cart-column">
+                            <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
+                            <input type="hidden" name="form-${total_form.value}-product" class="cart-item-title" id="id_form-${total_form.value}-product" value="${id}"><span class="cart-item-title">${title}</span>
+                        </div>
+                        <input type="text" name="form-${total_form.value}-price" value="0" readonly="" class="cart-price cart-column" id="id_form-${total_form.value}-price">
+                        <div class="cart-quantity cart-column">
+                            
+                            <input type="number" name="form-${total_form.value}-amount" class="cart-quantity-input" min="1" value="1" id="id_form-${total_form.value}-amount">
+                        </div>
+                        <div class="cart-quantity cart-column">    
+                            <input type="number" name="form-${total_form.value}-total" readonly class="cart-quantity-input" id="id_form-${total_form.value}-total">
+                            <button class="btn btn-danger" type="button">REMOVE</button>
+                        </div>`
+            /*`
+                <div class="cart-item form-empty cart-column">
                     <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
-                    <span class="cart-item-title">${title}</span>
+                    {{formset.empty_form.product}}<span class="cart-item-title">${title}</span>
                 </div>
-                <span class="cart-price cart-column">${price}</span>
+                {{formset.empty_form.price}}
                 <div class="cart-quantity cart-column">
-                    <input id="cart-index-${cartItemNames.length}" class="cart-quantity-input" type="number" value="1">
+                    {% comment %} <input id="cart-index-${cartItemNames.length}" class="cart-quantity-input" type="number" value="1"> {% endcomment %}
+                    {{formset.empty_form.amount}}
                     <button class="btn btn-danger" type="button">REMOVE</button>
-                </div>`
+                </div>`*/
+
+
+
+
+                
             cartRow.innerHTML = cartRowContents
+            cartRow.querySelector('.cart-price').value = price
+            cartRow.querySelector(`#id_form-${total_form.value}-product`).value = id
             cartItems.append(cartRow)
+            let amount = cartRow.querySelector(`#id_form-${total_form.value}-amount`)
+            cartRow.querySelector(`#id_form-${total_form.value}-total`).value = price * amount.value 
             cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
             cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
+            // Add event listener for quantity input
+            cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', () => {
+                cartRow.querySelector(`#id_form-${total_form.value}-total`).value = price * amount.value 
+            });
+            total_form.value = parseInt(total_form.value) + 1
             updateCartTotal()
         }
 
@@ -313,12 +291,12 @@
                 var cartRow = cartRows[i]
                 var priceElement = cartRow.getElementsByClassName('cart-price')[0]
                 var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
-                var price = parseFloat(priceElement.innerText.replace('$', ''))
+                var price = parseFloat(priceElement.value)
                 var quantity = quantityElement.value
                 total = total + (price * quantity)
             }
             total = Math.round(total * 100) / 100
-            document.getElementsByClassName('cart-total-price')[0].innerText = '$' + total
+            document.getElementsByClassName('cart-total-price')[0].value = total
         }
     </script>
 {% endblock %}

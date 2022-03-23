@@ -5,11 +5,9 @@ from random import randrange
 def random_image_chooser():
     """This defines the default image for the user"""
     images = [
-        'profiles/generic/profile_happy.png',
-        'profiles/generic/profile_kakashi.jpg',
-        'profiles/generic/profile_whats.jpg',
+        'profiles/generic/default_profile.jpeg',
     ]
-    i = randrange(3)
+    i = randrange(1)
     return images[i]
 
 class User(AbstractUser):
