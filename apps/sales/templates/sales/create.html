@@ -19,8 +19,6 @@
 
 {% block content %}
 
-
-
 <!-- Finaliza cuadro superior de la pantalla -->
 
 <br>
@@ -103,6 +101,10 @@
                 <div id="div_id_form-product" class="mb-3"> 
                     <label for="id_form-product" class="form-label requiredField">Producto<span class="asteriskField">*</span> </label> 
                     <select name="form-product" class="cart-item-title select form-select" id="id_form-product"> 
+                        <option value="" selected="selected">---------</option> 
+                        {% for product in products %}
+                            <option value="{{product.id}}">{{product.name}}</option> 
+                        {% endfor %}
                     </select>
                 </div> 
             </div>

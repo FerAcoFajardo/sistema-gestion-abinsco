@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.core import serializers
 
+from apps import products
+
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
@@ -65,6 +67,8 @@ class CreateView(LoginRequiredMixin, View):
 
     def get_context_data(self, **kwargs):
         context = {}
+        products = Products.objects.all()
+        context['products'] = products
         context["customer"] = Customers.objects.get(id=1) 
         return context
     

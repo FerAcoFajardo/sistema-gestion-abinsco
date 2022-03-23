@@ -1,4 +1,5 @@
 
+
 $("#id_customer").select2({
     ajax: {
         url: `http://localhost:8000/sales/get_customers_by_name`,
@@ -31,8 +32,3 @@ $("#id_form-product").select2({
         // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
     }
 });
-
-
-
-
-
