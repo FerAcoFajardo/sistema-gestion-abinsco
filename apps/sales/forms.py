@@ -44,7 +44,6 @@ class SalesForm(forms.ModelForm):
         widgets = {
             'user': forms.HiddenInput(), 
             # 'customer': forms.HiddenInput(),
-            # campo de los comentarios, aqui en widgets se agregan este tipo de cosas
             'commentaries': forms.Textarea(attrs={'class': ''}),
             'total': forms.NumberInput(attrs={'class': 'cart-total-price', 'readonly': 'readonly', 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
         }
@@ -52,13 +51,16 @@ class SalesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         
+        
         super(SalesForm, self).__init__(*args, **kwargs)
         
+        
+        
         self.fields['customer'].required = False
-            
-        self.fields['customer'].queryset = Customers.objects.filter(id=-1)
+
+        # self.fields['customer'].queryset = Customers.objects.filter(id=1)
         
-        
+        self.fields['customer'].initial = Customers.objects.get(id=1)          
         
 # Form set to create sale details
 class SaleDetailsForm(forms.ModelForm):
@@ -116,9 +118,11 @@ class SaleDetailsForm(forms.ModelForm):
         if form_kwargs is not None:
             customer = form_kwargs.pop('customer', None)
             user = form_kwargs.pop('user', None)
+
         else:
             customer = kwargs.pop('customer', None)
             user = kwargs.pop('user', None)
+
         super(SaleDetailsForm, self).__init__(*args, **kwargs)
         
         self.fields['sale'].required = False

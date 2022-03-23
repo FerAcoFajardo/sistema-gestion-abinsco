@@ -32,7 +32,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
 class CreateView(LoginRequiredMixin, View):
     template = 'sales/create.html'
-    succes_url = reverse_lazy('sales:index')
+    success_url = reverse_lazy('sales:index')
     message = 'La venta se ha registrado correctamente'
     
     
@@ -48,16 +48,15 @@ class CreateView(LoginRequiredMixin, View):
         # print(self.get_form_kwargs(pk=pk))
         
         form_kwargs = self.get_form_kwargs()
-        form = SalesForm(initial={'user': self.request.user})
+        form = SalesForm(initial=form_kwargs)
         # customer = form_kwargs.get('customer')
         
-        #form_details = SaleDetailsForm(initial=form_kwargs)
+        # form_details = SaleDetailsForm(form_kwargs=form_kwargs)
         
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(form_kwargs=form_kwargs)
         
-        # context = self.get_context_data()
-        context = {}
+        context = self.get_context_data()
         
         context['form'] = form
         context['formset'] = formset
@@ -67,7 +66,6 @@ class CreateView(LoginRequiredMixin, View):
     def get_context_data(self, **kwargs):
         context = {}
         context["customer"] = Customers.objects.get(id=1) 
-        context["user"] = self.request.user 
         return context
     
     
@@ -81,12 +79,8 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
-        # context = self.get_context_data(self,**kwargs)
-        # Obtener el id del cliente desde el url
-        # customer_id = request.POST.get('customer')
-        # print(f'{customer_id=}')
         form_kwargs = self.get_form_kwargs()
-        form = SalesForm(request.POST)
+        form = SalesForm(request.POST, initial=form_kwargs)
         SaleDetailsFormset = formset_factory(SaleDetailsForm, extra=0)
         formset = SaleDetailsFormset(request.POST)
         
@@ -117,7 +111,7 @@ class CreateView(LoginRequiredMixin, View):
             sale.save()
             
             messages.success(request,self.message)
-            return redirect(self.succes_url)
+            return redirect(self.success_url)
         else:
             return self.form_invalid(form, formset)
         
@@ -128,11 +122,11 @@ class CreateView(LoginRequiredMixin, View):
         Returns:
             _type_: _description_
         """
-        # customer_id = pk
-        # customer = Customers.objects.get(id=customer_id)
         user = self.request.user
-        return {'user': user}
-    
+        context = {}
+        context['customer'] = Customers.objects.get(id=1)
+        context['user'] = user
+        return context
     
     
     def form_invalid(self, form, formset):
@@ -146,13 +140,9 @@ class CreateView(LoginRequiredMixin, View):
             _type_: _description_
         
         """
-        # context = self.get_context_data(self)
-        context = {}
-        context['form'] = form
-        context['formset'] = formset
-        print(f'{form.errors=}')
-        print(f'{formset.errors=}')
-        return render(self.request, self.template, context)
+        messages.error(self.request, 'No se pudo registrar la venta debido a un error inesperado, por favor vuelva a intentar') 
+        
+        return render()
     
     
 # View to get a product from id and return a json
@@ -181,7 +171,6 @@ def get_product_by_id(request, pk):
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
 
 
-
 def get_products_by_name(request):
     if request.method == 'GET':
         try:
@@ -206,6 +195,7 @@ def get_products_by_name(request):
     else:
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})    
 
+
 # View to get a customer from id and return a json
 def get_customer_by_id(request, pk):
     if request.method == 'GET':
@@ -222,6 +212,7 @@ def get_customer_by_id(request, pk):
         return JsonResponse(data)
     else:
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
+
 
 # View to get a customer list from name and return a json
 def get_customers_by_name(request):
@@ -243,7 +234,6 @@ def get_customers_by_name(request):
                 'id': customer['id'],
                 'text': customer['name']
             }
-            
             customersFormat.append(formato)
 
                
@@ -258,6 +248,7 @@ def get_customers_by_name(request):
     else: 
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
 
+
 def get_customers(request):
     if request.method == 'GET':
         customers = Customers.objects.all().values()
@@ -268,3 +259,4 @@ def get_customers(request):
         return JsonResponse(customers_json, safe = False )
     else:
         return JsonResponse({'error': 'Only GET method is allowed', 'status':418})
+

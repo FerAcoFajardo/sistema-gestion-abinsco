@@ -39,15 +39,15 @@
                         <h2 id="titulo-cliente">Información del cliente:</h2>
                         <dl>
                             <dt>Nombre</dt>
-                            <dd>{{customer.name}}</dd>
+                            <dd id="customer-name">{{customer.name}}</dd>
                             <dt>RFC</dt>
-                            <dd>{{customer.rfc}}</dd>
+                            <dd id="customer-rfc">{{customer.rfc}}</dd>
                             <dt>Dirección</dt>
-                            <dd>{{customer.address}}</dd>
+                            <dd id="customer-address">{{customer.address}}</dd>
                             <dt>Teléfono</dt>
-                            <dd>{{customer.phone}}</dd>
+                            <dd id="customer-phone">{{customer.phone}}</dd>
                             <dt>Correo</dt>
-                            <dd>{{customer.email}}</dd>
+                            <dd id="customer-email">{{customer.email}}</dd>
                         </dl>
                     </div>
                     <!-- Finaliza bloque "Información del cliente" -->
@@ -93,7 +93,7 @@
             <div id="product-form-list">
                 {% for form_details in formset %}
                     <div class="card mt-4 mb-4 product-form">
-                        {{form_details}}
+                        {{form_details.errors}}
                     </div>
                 {% endfor %}
             </div>
@@ -110,23 +110,46 @@
             <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
         {% endif %}
             
-        {{form.commentaries|as_crispy_field}}
         
         <section class="container content-section">
             <h2 class="section-header">Venta</h2>
-            <div class="cart-row">
-                <span class="cart-item cart-header cart-column">ITEM</span>
-                <span class="cart-price cart-header cart-column">PRICE</span>
-                <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-                <span class="cart-quantity cart-header cart-column">Total</span>
+            {% comment %} <div class="cart-row">
+                <span class="cart-item cart-header cart-column">Producto</span>
+                <span class="cart-price cart-header cart-column">Precio</span>
+                <span class="cart-quantity cart-header cart-column">Cantidad</span>
+                <span class="cart-quantity cart-header cart-column">Total del producto</span>
             </div>
             <div class="cart-items form-empty">
             </div>
             <div class="cart-total">
                 <strong class="cart-total-title">Total</strong>
                 {{form.total}}
+            </div> {% endcomment %}
+
+            <div class="table-responsive">
+                <table id="cart-table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Total del producto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-body">
+                        
+                    </tbody>
+                </table>
+                <tr class="cart-total">
+                    <strong class="cart-total-title">Total</strong>
+                    {{form.total}}
+                </tr>
             </div>
+
+
         </section>
+
+        {{form.commentaries|as_crispy_field}}
 
         <div class="col-md-12" style="text-align: right;margin-top: 5px;">
             <button id="submit-btn" class="btn btn-primary btn-lg save-sale" type="submit">
@@ -139,6 +162,29 @@
 
 {% block js %}
 
+
+    <script>
+
+    // event change select 
+    $('#id_customer').on('select2:select', function (e) { 
+        //var customerSelected = $('#id_customer').select2('data')
+        var customerSelected = e.params.data.id;
+        $.ajax({
+            url: `http://localhost:8000/sales/get_customer_by_id/${customerSelected}`,
+            type: 'GET',
+            dataType: 'json'
+        }).done(function( data2 ) {
+            document.getElementById('customer-name').innerHTML = data2.name
+            document.getElementById('customer-rfc').innerHTML = data2.rfc
+            document.getElementById('customer-address').innerHTML = data2.address
+            document.getElementById('customer-phone').innerHTML = data2.phone
+            document.getElementById('customer-email').innerHTML = data2.email
+        })
+    });
+
+        
+    </script>
+    
     <script>
         $("#id_customer").select2({
             ajax: {
@@ -146,7 +192,6 @@
                 type: 'GET',
                 dataType: 'json',
                 processResults: function (data) {
-                    console.log(typeof data);
                     // Transforms the top-level key of the response object from 'items' to 'results'
                     var dataObject = JSON.parse(data)
                     return {
@@ -217,9 +262,9 @@
         });
 
         function addItemToCart(id, title, price, imageSrc) {
-            var cartRow = document.createElement('div')
-            cartRow.classList.add('cart-row')
-            var cartItems = document.getElementsByClassName('cart-items')[0]
+            var cartRow = document.createElement('tr')
+            // cartRow.classList.add('cart-row')
+            var cartItems = document.querySelector('#cart-body')
             var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
             for (var i = 0; i < cartItemNames.length; i++) {
                 if (cartItemNames[i].innerText == title) {
@@ -235,38 +280,23 @@
             
             let total_form = document.querySelector('#id_form-TOTAL_FORMS')
 
-            console.log(total_form.value)
-
             var cartRowContents = `
-                        <div class="cart-item form-empty cart-column">
-                            <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
+                        <td class="cart-item  cart-column">
+                            <img class="img-fluid cart-item-image" src="${imageSrc}" width="100" height="100">
                             <input type="hidden" name="form-${total_form.value}-product" class="cart-item-title" id="id_form-${total_form.value}-product" value="${id}"><span class="cart-item-title">${title}</span>
-                        </div>
-                        <input type="text" name="form-${total_form.value}-price" value="0" readonly="" class="cart-price cart-column" id="id_form-${total_form.value}-price">
-                        <div class="cart-quantity cart-column">
+                        </td>
+                        <td>
+                                <input type="text" name="form-${total_form.value}-price" value="0" readonly class="cart-price" id="id_form-${total_form.value}-price">
+                        </td>
+                        <td class="cart-quantity cart-column">
                             
                             <input type="number" name="form-${total_form.value}-amount" class="cart-quantity-input" min="1" value="1" id="id_form-${total_form.value}-amount">
-                        </div>
-                        <div class="cart-quantity cart-column">    
-                            <input type="number" name="form-${total_form.value}-total" readonly class="cart-quantity-input" id="id_form-${total_form.value}-total">
+                        </td>
+                        <td class="cart-column">    
+                            <input type="number" name="form-${total_form.value}-total" readonly class="product-total" id="id_form-${total_form.value}-total">
                             <button class="btn btn-danger" type="button">REMOVE</button>
-                        </div>`
-            /*`
-                <div class="cart-item form-empty cart-column">
-                    <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
-                    {{formset.empty_form.product}}<span class="cart-item-title">${title}</span>
-                </div>
-                {{formset.empty_form.price}}
-                <div class="cart-quantity cart-column">
-                    {% comment %} <input id="cart-index-${cartItemNames.length}" class="cart-quantity-input" type="number" value="1"> {% endcomment %}
-                    {{formset.empty_form.amount}}
-                    <button class="btn btn-danger" type="button">REMOVE</button>
-                </div>`*/
-
-
-
-
-                
+                        </td>`
+                        
             cartRow.innerHTML = cartRowContents
             cartRow.querySelector('.cart-price').value = price
             cartRow.querySelector(`#id_form-${total_form.value}-product`).value = id
@@ -276,22 +306,41 @@
             cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
             cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
             // Add event listener for quantity input
-            cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', () => {
-                cartRow.querySelector(`#id_form-${total_form.value}-total`).value = price * amount.value 
-            });
             total_form.value = parseInt(total_form.value) + 1
             updateCartTotal()
         }
 
+        
+
         function updateCartTotal() {
-            var cartItemContainer = document.getElementsByClassName('cart-items')[0]
-            var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+            var table = document.getElementById("cart-table")
             var total = 0
-            for (var i = 0; i < cartRows.length; i++) {
+            var i = 0
+
+            for (let row of table.rows) {
+
+                var priceElement = row[1]
+                var quantityElement = row[2]
+                var itemTotal = document.getElementById(`id_form-${i}-total`)
+
+                console.log(`precio: ${priceElement.value}`)
+                console.log(`cantidad: ${quantityElement.value}`)
+                console.log(`total: ${itemTotal.value}`)
+                i++
+            }
+
+
+            for (var i = 1; i < x; i++) {
                 var cartRow = cartRows[i]
                 var priceElement = cartRow.getElementsByClassName('cart-price')[0]
                 var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
+                var itemTotal = cartRow.getElementsByClassName(`id_form-${i}-total`)[0]
+                console.log(`precio: ${priceElement.value}`)
+                console.log(`cantidad: ${quantityElement.value}`)
+                console.log(`total: ${itemTotal.value}`)
+
                 var price = parseFloat(priceElement.value)
+                itemTotal.value = price * quantityElement.value
                 var quantity = quantityElement.value
                 total = total + (price * quantity)
             }

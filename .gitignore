@@ -8,6 +8,9 @@ media/**/*
 !media/profiles/
 !media/profiles/generic/
 !media/profiles/generic/**
+!media/products/
+!media/products/generic/
+!media/products/generic/**
 
 # Backup files # 
 *.bak 
