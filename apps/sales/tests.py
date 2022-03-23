@@ -12,7 +12,7 @@ class SalesTestCase(TestCase):
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--headless')
-        chrome_options.addArguments("--disable-dev-shm-usage");
+        chrome_options.add_argument("--disable-dev-shm-usage");
         cls.driver = webdriver.Chrome(chrome_options=chrome_options)
         cls.driver.maximize_window() # For maximizing window
         driver = cls.driver
