@@ -1,7 +1,8 @@
 
 
 function removeCartItem(event) {
-    var buttonClicked = event.target
+    console.log(event)
+    var buttonClicked = event.currentTarget
     buttonClicked.parentElement.parentElement.remove()
     updateCartTotal()
 }
