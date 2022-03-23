@@ -50,6 +50,13 @@ jobs:
     
     - name: Run Server
       run: python manage.py runserver &
+      env:
+        SECRET_KEY: 'django-insecure-*ok*q$xn&#r-bb1nd$(!eb4f!t%gzr43+9#d4-eil#35dclz-t'
+        DATABASE_NAME:  'abinsco'
+        DATABASE_PORT:  '5432'
+        DATABASE_USER:  'postgres'
+        DATABASE_PASS:  'postgres'
+        DATABASE_HOST:  'localhost'
  
     - uses: nanasess/setup-chromedriver@v1
     - run:  |
@@ -60,5 +67,13 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test apps.sales.tests
+        
+      env:
+        SECRET_KEY: 'django-insecure-*ok*q$xn&#r-bb1nd$(!eb4f!t%gzr43+9#d4-eil#35dclz-t'
+        DATABASE_NAME:  'abinsco'
+        DATABASE_PORT:  '5432'
+        DATABASE_USER:  'postgres'
+        DATABASE_PASS:  'postgres'
+        DATABASE_HOST:  'localhost'
         
     
