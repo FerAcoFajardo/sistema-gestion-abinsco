@@ -17,7 +17,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: abinsco
+          POSTGRES_DB: default
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
@@ -35,24 +35,28 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name:  Run migrations
+    - name:  Run migrations & create superuser
       run:  |
         python manage.py makemigrations
         python manage.py migrate
+        python manage.py createsuperuser --noinput
       
       env:
         SECRET_KEY: 'django-insecure-*ok*q$xn&#r-bb1nd$(!eb4f!t%gzr43+9#d4-eil#35dclz-t'
-        DATABASE_NAME:  'abinsco'
+        DATABASE_NAME:  'default'
         DATABASE_PORT:  '5432'
         DATABASE_USER:  'postgres'
         DATABASE_PASS:  'postgres'
         DATABASE_HOST:  'localhost'
+        DJANGO_SUPERUSER_PASSWORD:  'test'
+        DJANGO_SUPERUSER_EMAIL: 'test@test.com'
+        DJANGO_SUPERUSER_USERNAME:  'test'
     
     - name: Run Server
       run: python manage.py runserver &
       env:
         SECRET_KEY: 'django-insecure-*ok*q$xn&#r-bb1nd$(!eb4f!t%gzr43+9#d4-eil#35dclz-t'
-        DATABASE_NAME:  'abinsco'
+        DATABASE_NAME:  'default'
         DATABASE_PORT:  '5432'
         DATABASE_USER:  'postgres'
         DATABASE_PASS:  'postgres'
@@ -71,7 +75,7 @@ jobs:
         
       env:
         SECRET_KEY: 'django-insecure-*ok*q$xn&#r-bb1nd$(!eb4f!t%gzr43+9#d4-eil#35dclz-t'
-        DATABASE_NAME:  'abinsco'
+        DATABASE_NAME:  'default'
         DATABASE_PORT:  '5432'
         DATABASE_USER:  'postgres'
         DATABASE_PASS:  'postgres'

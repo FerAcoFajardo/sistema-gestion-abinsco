@@ -25,11 +25,11 @@ class SalesTestCase(TestCase):
         
         submit = driver.find_element_by_id('submitBtn')
         
-        username.send_keys('admin')
-        password.send_keys('admin')
+        username.send_keys('test')
+        password.send_keys('test')
 
         submit.send_keys(Keys.RETURN)
-        print(driver.title)
+
         assert "Dashboard" in driver.title
 
     @classmethod
