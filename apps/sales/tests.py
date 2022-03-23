@@ -11,8 +11,9 @@ class SalesTestCase(TestCase):
     def setUpClass(cls):
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument("--disable-dev-shm-usage");
+        # descomentar si ejecutarás las pruebas en tu maquina
+        #chrome_options.add_argument('--headless')
+        #chrome_options.add_argument("--disable-dev-shm-usage");
         cls.driver = webdriver.Chrome(chrome_options=chrome_options)
         cls.driver.maximize_window() # For maximizing window
         driver = cls.driver
@@ -28,8 +29,8 @@ class SalesTestCase(TestCase):
         password.send_keys('admin')
 
         submit.send_keys(Keys.RETURN)
-
-        assert 'admin' in driver.page_source
+        print(driver.title)
+        assert "Dashboard" in driver.title
 
     @classmethod
     def tearDownClass(cls):
@@ -44,7 +45,7 @@ class SalesTestCase(TestCase):
         select_customer = Select(driver.find_element_by_id('id_customer'))
         select_customer.select_by_index('1')
 
-        select_product = Select(driver.find_element_by_id('id_form-__prefix__-product'))
+        select_product = Select(driver.find_element_by_id('id_form-product'))
         select_product.select_by_index('1')
 
         btn_add_product = driver.find_element_by_id('add-form')
@@ -52,14 +53,18 @@ class SalesTestCase(TestCase):
         select_product.select_by_value('2')
         btn_add_product.send_keys(Keys.RETURN)
 
-        quantity_first_product = driver.find_element_by_id('cart-index-0')
+        quantity_first_product = driver.find_element_by_id('id_form-0-amount')
         quantity_first_product.send_keys(Keys.ARROW_UP)
         quantity_first_product.send_keys(Keys.ARROW_UP)
+
+        commentaries = driver.find_element_by_id('id_commentaries')
+        commentaries.send_keys("sale without credit test")
 
         submit = driver.find_element_by_id('submit-btn')
+        time.sleep(5)
         submit.send_keys(Keys.RETURN)
-
-        self.assertEqual("Tutorialspoint", "Tutorialspoint")
+        time.sleep(2)
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
         #assert "Ventas" in driver.title
 
         # para dar click al select2
@@ -67,7 +72,7 @@ class SalesTestCase(TestCase):
         #customer = driver.find_element_by_xpath("//span[@class='selection']")
         #customer.click()
     
-
+    
     def test_normal_sale_with_credit(self):
 
         driver = self.driver
@@ -80,7 +85,7 @@ class SalesTestCase(TestCase):
         radio_credit = driver.find_element_by_id('credito')
         radio_credit.click()
         
-        select_product = Select(driver.find_element_by_id('id_form-__prefix__-product'))
+        select_product = Select(driver.find_element_by_id('id_form-product'))
         select_product.select_by_index('1')
 
         btn_add_product = driver.find_element_by_id('add-form')
@@ -88,11 +93,18 @@ class SalesTestCase(TestCase):
         select_product.select_by_value('2')
         btn_add_product.send_keys(Keys.RETURN)
 
-        quantity_first_product = driver.find_element_by_id('cart-index-0')
+        quantity_first_product = driver.find_element_by_id('id_form-0-amount')
         quantity_first_product.send_keys(Keys.ARROW_UP)
         quantity_first_product.send_keys(Keys.ARROW_UP)
 
+        commentaries = driver.find_element_by_id('id_commentaries')
+        commentaries.send_keys("sale with credit test")
+
         submit = driver.find_element_by_id('submit-btn')
-        #submit.send_keys(Keys.RETURN)
+
+        time.sleep(5)
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
         
-        self.assertEqual("Tutorialspoint", "Tutorialspoint")
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+    
