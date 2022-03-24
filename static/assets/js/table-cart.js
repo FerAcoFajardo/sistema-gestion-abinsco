@@ -7,11 +7,12 @@ function removeCartItem(event) {
     
     let total_form = document.querySelector('#id_form-TOTAL_FORMS')
     // Iterate through all the forms
-    for (i = 0; i <= total_form.value-1; i++) {
-        console.log(buttonClicked.id >= i)
-        if(buttonClicked.id > i){
+    for (i = 0; i < total_form.value; i++) {
+        if(i >= buttonClicked.id){
             // Get the amount
             let amount = document.getElementById(`id_form-${i}-amount`)
+            console.log("i value: " + i)
+            console.log(amount)
             // Get the price
             let price = document.getElementById(`id_form-${i}-price`)
             // Get the total
@@ -22,24 +23,24 @@ function removeCartItem(event) {
             let product = document.getElementById(`id_form-${i}-product`)
             
             // Changes the IDs
-            amount.id = `id_form-${i}-amount`
-            console.log(amount)
-            price.id = `id_form-${i}-price`
-            total.id = `id_form-${i}-total`
-            discount.id = `id_form-${i}-discount`
-            product.id = `id_form-${i}-product`
+            amount.id = `id_form-${i-1}-amount`
+
+            price.id = `id_form-${i-1}-price`
+            total.id = `id_form-${i-1}-total`
+            discount.id = `id_form-${i-1}-discount`
+            product.id = `id_form-${i-1}-product`
             // Change the names
-            amount.name = `form-${i}-amount`
-            price.name = `form-${i}-price`
-            total.name = `form-${i}-total`
-            discount.name = `form-${i}-discount`
-            product.name = `form-${i}-product`
-            buttonClicked.id = i
+            amount.name = `form-${i-1}-amount`
+            price.name = `form-${i-1}-price`
+            total.name = `form-${i-1}-total`
+            discount.name = `form-${i-1}-discount`
+            product.name = `form-${i-1}-product`
+            buttonClicked.id = i-1
             
         }
     }
-    total_form.value = parseInt(total_form.value) - 1
     buttonClicked.parentElement.parentElement.remove()
+    total_form.value = parseInt(total_form.value) - 1
     updateCartTotal()
 }
 
