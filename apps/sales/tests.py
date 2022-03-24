@@ -4,6 +4,9 @@ from selenium.webdriver.common.keys import Keys
 import time
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.common.by import By
 
 class SalesTestCase(TestCase):
     
@@ -36,6 +39,7 @@ class SalesTestCase(TestCase):
     def tearDownClass(cls):
         cls.driver.quit()
         #super(test_sales, cls).tearDownClass()
+    
     
     def test_normal_sale_without_credit(self):
         driver = self.driver
@@ -95,7 +99,6 @@ class SalesTestCase(TestCase):
 
         quantity_first_product = driver.find_element_by_id('id_form-0-amount')
         quantity_first_product.send_keys(Keys.ARROW_UP)
-        quantity_first_product.send_keys(Keys.ARROW_UP)
 
         commentaries = driver.find_element_by_id('id_commentaries')
         commentaries.send_keys("sale with credit test")
@@ -108,3 +111,138 @@ class SalesTestCase(TestCase):
         
         self.assertEqual("http://localhost:8000/sales/", driver.current_url)
     
+    def test_sale_without_product(self):
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+        
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('1')
+
+        time.sleep(2)
+        
+        
+        submit = driver.find_element_by_id('submit-btn')
+        submit.send_keys(Keys.RETURN)
+
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+
+    
+    def test_remove_product_from_sale(self):
+
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+        
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('1')
+        
+        select_product = Select(driver.find_element_by_id('id_form-product'))
+        select_product.select_by_index('1')
+
+        btn_add_product = driver.find_element_by_id('add-form')
+        btn_add_product.send_keys(Keys.RETURN)
+        select_product.select_by_value('2')
+        btn_add_product.send_keys(Keys.RETURN)
+        select_product.select_by_value('3')
+        btn_add_product.send_keys(Keys.RETURN)
+
+        time.sleep(3)
+
+        btn_remove_product = driver.find_elements_by_class_name('fa-trash-alt')
+        #venue = wait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//i[@class="fas fa-trash-alt"]')))
+        btn_remove_product[1].click()
+        time.sleep(2)
+        btn_remove_product[2].click()
+        time.sleep(2)
+        btn_remove_product[0].click()
+        time.sleep(2)
+
+        select_product.select_by_value('1')
+        btn_add_product.send_keys(Keys.RETURN)
+        select_product.select_by_value('2')
+        btn_add_product.send_keys(Keys.RETURN)
+        select_product.select_by_value('3')
+        btn_add_product.send_keys(Keys.RETURN)
+
+        time.sleep(1)
+        btn_remove_product = driver.find_elements_by_class_name('fa-trash-alt')
+        btn_remove_product[1].click()
+        time.sleep(2)
+
+
+        commentaries = driver.find_element_by_id('id_commentaries')
+        commentaries.send_keys("test remove products in the cart list")
+
+        submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
+        
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+
+    
+
+    def test_sale_without_client(self):
+        
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('0')
+
+        select_product = Select(driver.find_element_by_id('id_form-product'))
+        select_product.select_by_index('1')
+
+        
+
+        btn_add_product = driver.find_element_by_id('add-form')
+        
+        btn_add_product.send_keys(Keys.RETURN)
+ 
+        commentaries = driver.find_element_by_id('id_commentaries')
+        commentaries.send_keys("test if a sale can happen without a client")
+        
+        time.sleep(2)
+
+        submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+
+    
+
+
+    def test_sale_message_negative_stock(self):
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+        
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('1')
+        
+        select_product = Select(driver.find_element_by_id('id_form-product'))
+        select_product.select_by_index('1')
+
+        btn_add_product = driver.find_element_by_id('add-form')
+        
+        btn_add_product.send_keys(Keys.RETURN)
+        
+        time.sleep(2)
+
+        quantity_first_product = driver.find_element_by_id('id_form-0-amount')
+        quantity_first_product.send_keys("999999")
+
+        time.sleep(2)
+
+        submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
