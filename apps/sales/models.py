@@ -19,7 +19,7 @@ class Sales(models.Model):
         ordering = ['id'] # this is the default ordering of the model
         
     def __str__(self):
-        return self.commentaries
+        return f'Sale ID: {self.id}'
     
     
 class SaleDetails(models.Model):
@@ -28,6 +28,7 @@ class SaleDetails(models.Model):
     amount = models.IntegerField()
     total = models.FloatField(null=False, blank=False, default=0)
     price = models.FloatField(null=False, blank=False, default=0)
+    discount = models.FloatField(null=False, blank=False, default=0)
     
     class Meta:
         db_table = 'sales_details' # this is the name of the table in the database

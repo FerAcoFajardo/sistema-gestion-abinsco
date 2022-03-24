@@ -166,12 +166,17 @@ def get_product_by_id(request, pk):
     if request.method == 'GET':
         
         product = Products.objects.get(id=pk)
+        print(product)
         data = {
             'id': product.id,
             'name': product.name,
             'price': product.current_price,
             'stock': product.in_storage,
             'image': product.image.url,
+            'description': product.description,
+            'code': product.code,
+            'unity': product.unity,
+            'category_id': product.category_id
         }
         return JsonResponse(data)
     else:

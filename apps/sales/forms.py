@@ -45,7 +45,7 @@ class SalesForm(forms.ModelForm):
             'user': forms.HiddenInput(), 
             # 'customer': forms.HiddenInput(),
             'commentaries': forms.Textarea(attrs={'class': ''}),
-            'total': forms.NumberInput(attrs={'class': 'cart-total-price', 'readonly': 'readonly', 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
+            'total': forms.NumberInput(attrs={'class': 'form-control cart-total-price', 'readonly': 'readonly', 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
         }
 
 
@@ -73,6 +73,7 @@ class SaleDetailsForm(forms.ModelForm):
             'amount',
             'total',
             'price',
+            'discount'
         ]
         
         labels = {
@@ -92,22 +93,6 @@ class SaleDetailsForm(forms.ModelForm):
         }
         
         
-    # def clean_amount(self):
-    #     """Valida si hay stock
-
-    #     Raises:
-    #         ValidationError: Error de validación
-
-    #     Returns:
-    #         _type_: _description_
-    #     """
-    #     product = self.cleaned_data['product']
-    #     # pprint(self.cleaned_data)
-    #     amount = self.cleaned_data['amount']
-    #     amount = int(amount)
-    #     if product.in_storage < amount:
-    #         raise ValidationError('El producto no tiene suficiente stock')
-    #     return product
     
     
     def __init__(self, *args, **kwargs):

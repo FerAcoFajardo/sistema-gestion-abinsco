@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 
 class Purchases(models.Model):
@@ -28,9 +29,10 @@ class PurchaseDetails(models.Model):
     purchase = models.ForeignKey('purchases.Purchases', on_delete=models.CASCADE)
     product = models.ForeignKey('products.Products', on_delete=models.CASCADE)
     amount = models.FloatField(null=False, blank=False)
-    total =  models.FloatField(null=False, blank=False)
-    price = models.FloatField(null=False, blank=False)
-    
+    total =  models.FloatField(null=False, blank=False, default=0)
+    price = models.FloatField(null=False, blank=False, default=0)
+    discount = models.FloatField(null=False, blank=False, default=0)
+
     class Meta:
         db_table = "purchase_details"
         verbose_name = 'purchase detail'

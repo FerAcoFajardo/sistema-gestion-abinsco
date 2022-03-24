@@ -60,29 +60,17 @@
     font-size: 2.5em;
 }
 
-.cart-price {
-    width: 80%;
-    font-size: 1.2em;
-    text-align: center;
-    color: #333;
-    border-right: 0;
-    border-top: 0;
-    border-bottom: 0;
-    background:transparent;
-    border-left: 0;
-}
-
+.cart-price,
 .cart-quantity-input {
-    /* height: 34px; */
     width: 80%;
     border-radius: 5px;
     border: 1px solid #56CCF2;
-    color: #333;
-    padding: 0;
-    text-align: center;
     font-size: 1.2em;
-    background: transparent;
+    text-align: center;
+    color: #333;
+    background:transparent;
 }
+
 
 
 .product-total{
