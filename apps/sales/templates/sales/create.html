@@ -138,7 +138,7 @@
                             <th class="align-middle text-center">Descripción</th>
                             <th class="align-middle text-center">Precio</th>
                             <th class="align-middle text-center">Descuento</th>
-                            <th class="align-middle text-center">Total</th>
+                            <th class="align-middle text-center">Total producto</th>
                             <th class="align-middle text-center"></th>
                         </tr>
                     </thead>
@@ -148,6 +148,20 @@
                 </table>
                 <tfoot>
                     <tr class="cart-total input-group mb-3">
+                        <span class="cart-total-title">Subtotal</span>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id>$</span>
+                            <input type="number" name="subtotal" class="form-control" id="subtotal" value="0" readonly>
+                        </div>
+                    </tr>
+                    <tr class="cart-total input-group mb-3">
+                        <span class="cart-total-title">IVA</span>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id>$</span>
+                            <input type="number" name="iva" class="form-control" id="iva" value="0" readonly>
+                        </div>
+                    </tr>
+                    <tr class="cart-total input-group mb-3">
                         <span class="cart-total-title">Total</span>
                         <div class="input-group mb-3">
                             <span class="input-group-text">$</span>
@@ -156,8 +170,6 @@
                     </tr>
                 </tfoot>
             </div>
-
-
         </section>
 
         {{form.commentaries|as_crispy_field}}
@@ -167,8 +179,8 @@
                 Guardar
             </button>
         </div>
-
     </form>
+
 {% endblock %}
 
 {% block js %}

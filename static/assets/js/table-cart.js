@@ -59,6 +59,30 @@ function priceChanged(event) {
     }
     updateCartTotal()
 }
+// Crea uno para el descuento mortis Miauuuuuuuu, en lugar de hacer updateProductTotal() te va a tocar hacer una función 
+// para actualizar el precio, si, a ver si github copilot tiene ganas de trabajar 
+function discountChanged(event) {
+    var input = event.target
+    if (isNaN(input.value) || input.value <= 0 || input.value > 100 ) {
+        input.value = 0
+    }
+    updateCartTotal()
+}
+
+// Function to update product total when discount is changed
+function updateProductTotal(index) {
+    // Get the discount 
+    let discount = document.getElementById(`id_form-${index}-discount`)
+    // Get the total
+    let total = document.getElementById(`id_form-${index}-total`)
+    // Get the price
+    let price = document.getElementById(`id_form-${index}-price`)
+    // Calculate the new total
+    let newTotal = parseFloat(price.value) * (1 - parseFloat(discount.value) / 100)
+    // Update the total
+    total.value = newTotal.toFixed(2)
+    // updateCartTotal()
+}
 
 function addToCartClicked(event) {
     var button = event.target
@@ -152,7 +176,7 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
             </td>
 
             <td class="cart-discount align-middle text-center">
-                <input type="number" name="form-${total_form.value}-discount" class="cart-quantity-input" min="0" value="0" id="id_form-${total_form.value}-discount">
+                <input type="number" name="form-${total_form.value}-discount" class="cart-discount-input" min="0" max="100" value="0" id="id_form-${total_form.value}-discount">
             </td>
 
             <td class="cart-column align-middle text-center">    
@@ -169,12 +193,14 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
     priceInput.value = price
     priceInput.addEventListener('change', priceChanged)
     cartRow.querySelector(`#id_form-${total_form.value}-product`).value = id
+    // Get discount
+    
     cartItems.append(cartRow)
     let amount = cartRow.querySelector(`#id_form-${total_form.value}-amount`)
     cartRow.querySelector(`#id_form-${total_form.value}-total`).value = price * amount.value
     cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCartItem)
     cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
-    // Add event listener for quantity input
+    cartRow.getElementsByClassName('cart-discount-input')[0].addEventListener('change', discountChanged)
     total_form.value = parseInt(total_form.value) + 1
     updateCartTotal()
 }
@@ -204,17 +230,33 @@ function updateCartTotal() {
         var priceElement = document.getElementById(`id_form-${i}-price`)
         var quantityElement = document.getElementById(`id_form-${i}-amount`)
         var itemTotal = document.getElementById(`id_form-${i}-total`)
-        var itemDiscount = document.getElementById(`id_form-${i}-discount`)
-
-        console.log(`discount: ${itemDiscount.value}`)
+        var discount = document.getElementById(`id_form-${i}-discount`)
+        
         console.log(`precio: ${priceElement.value}`)
         console.log(`cantidad: ${quantityElement.value}`)
         console.log(`total: ${itemTotal.value}`)
-
+        console.log(`descuento: ${discount.value}`)
+        
         var price = parseFloat(priceElement.value)
         itemTotal.value = price * quantityElement.value
+        // Apply discount
+        if (discount.value > 0) {
+            itemTotal.value = itemTotal.value - (itemTotal.value * discount.value / 100)
+        }
+
+
+        
         total +=  parseFloat(itemTotal.value)
     }
+    
+    document.getElementById('subtotal').value = total
+
+    document.getElementById('iva').value = Math.round( (total * 0.16) * 100) / 100
+
+    total = total * 1.16
+
+    
+
     total = Math.round(total * 100) / 100
     document.getElementById('id_total').value = total
 }

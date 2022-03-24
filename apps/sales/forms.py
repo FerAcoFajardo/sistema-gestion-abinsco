@@ -45,7 +45,7 @@ class SalesForm(forms.ModelForm):
             'user': forms.HiddenInput(), 
             # 'customer': forms.HiddenInput(),
             'commentaries': forms.Textarea(attrs={'class': ''}),
-            'total': forms.NumberInput(attrs={'class': 'form-control cart-total-price', 'readonly': 'readonly', 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
+            'total': forms.NumberInput(attrs={'class': 'form-control cart-total-price', 'readonly': 'readonly', 'value':0, 'style':'margin:0 0 0 0;border:0 0 0 0;'}),
         }
 
 

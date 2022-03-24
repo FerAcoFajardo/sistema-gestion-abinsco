@@ -95,13 +95,13 @@ class CreateView(LoginRequiredMixin, View):
                 commentaries = form.cleaned_data['commentaries'],
                 user = self.request.user,
                 customer = form.cleaned_data['customer'] if form.cleaned_data['customer'] else Customers.objects.get(id=1),
+                total = form.cleaned_data['total']
             )
-            total_price = 0
+            sale.save()
             print(formset)
             for form_details in formset:
                 if form_details.is_valid():
                     details = form_details.save(commit=False)
-                    total_price += details.total
                     details.sale = sale
                     details.save()
                     
@@ -111,9 +111,7 @@ class CreateView(LoginRequiredMixin, View):
                     self.form_invalid(form, formset)
             else: 
                 self.form_invalid(form, formset)
-            sale.total = total_price
-            sale.save()
-            
+                        
             messages.success(request,self.message)
             return redirect(self.success_url)
         else:
