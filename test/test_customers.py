@@ -1,10 +1,9 @@
-from django.apps import apps
+#from django.apps import apps
 import pytest
 
-from apps.customers.models import Customers
+#from apps.customers.models import Customers
 
 @pytest.mark.django_db
-
 def test_customers_creation():
     customer = Customers.objects.create(
     name="juanito",

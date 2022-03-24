@@ -40,6 +40,7 @@ class SalesTestCase(TestCase):
         cls.driver.quit()
         #super(test_sales, cls).tearDownClass()
     
+    
     def test_normal_sale_without_credit(self):
         driver = self.driver
 
@@ -109,6 +110,24 @@ class SalesTestCase(TestCase):
         time.sleep(2)
         
         self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+    
+    def test_sale_without_product(self):
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+        
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('1')
+
+        time.sleep(2)
+        
+        
+        submit = driver.find_element_by_id('submit-btn')
+        submit.send_keys(Keys.RETURN)
+
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
 
     
     def test_remove_product_from_sale(self):
@@ -163,4 +182,67 @@ class SalesTestCase(TestCase):
         time.sleep(2)
         
         self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+
     
+
+    def test_sale_without_client(self):
+        
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('0')
+
+        select_product = Select(driver.find_element_by_id('id_form-product'))
+        select_product.select_by_index('1')
+
+        
+
+        btn_add_product = driver.find_element_by_id('add-form')
+        
+        btn_add_product.send_keys(Keys.RETURN)
+ 
+        commentaries = driver.find_element_by_id('id_commentaries')
+        commentaries.send_keys("test if a sale can happen without a client")
+        
+        time.sleep(2)
+
+        submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
+
+    
+
+
+    def test_sale_message_negative_stock(self):
+        driver = self.driver
+
+        driver.get('http://localhost:8000/sales/create')
+        
+        select_customer = Select(driver.find_element_by_id('id_customer'))
+        select_customer.select_by_index('1')
+        
+        select_product = Select(driver.find_element_by_id('id_form-product'))
+        select_product.select_by_index('1')
+
+        btn_add_product = driver.find_element_by_id('add-form')
+        
+        btn_add_product.send_keys(Keys.RETURN)
+        
+        time.sleep(2)
+
+        quantity_first_product = driver.find_element_by_id('id_form-0-amount')
+        quantity_first_product.send_keys("999999")
+
+        time.sleep(2)
+
+        submit = driver.find_element_by_id('submit-btn')
+
+        submit.send_keys(Keys.RETURN)
+        time.sleep(2)
+
+        self.assertEqual("http://localhost:8000/sales/", driver.current_url)
