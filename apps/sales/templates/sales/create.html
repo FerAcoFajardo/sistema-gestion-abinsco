@@ -22,7 +22,7 @@
 <!-- Finaliza cuadro superior de la pantalla -->
 
 <br>
-
+<section class="container content-section">
 <form method="POST" action=".">
     {% csrf_token %}
 
@@ -113,7 +113,7 @@
         {% endif %}
             
         
-        <section class="container content-section">
+        
             <h2 class="section-header">Venta</h2>
             {% comment %} <div class="cart-row">
                 <span class="cart-item cart-header cart-column">Producto</span>
@@ -129,7 +129,7 @@
             </div> {% endcomment %}
 
             <div class="table-responsive">
-                <table id="cart-table" class="table table-bordered">
+                <table id="cart-table" class="table table-bordered table-sm">
                     <thead>
                         <tr>
                             <th class="align-middle text-center">Código</th>
@@ -146,31 +146,37 @@
                         
                     </tbody>
                 </table>
-                <tfoot>
-                    <tr class="cart-total input-group mb-3">
-                        <span class="cart-total-title">Subtotal</span>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id>$</span>
-                            <input type="number" name="subtotal" class="form-control" id="subtotal" value="0" readonly>
-                        </div>
-                    </tr>
-                    <tr class="cart-total input-group mb-3">
-                        <span class="cart-total-title">IVA</span>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id>$</span>
-                            <input type="number" name="iva" class="form-control" id="iva" value="0" readonly>
-                        </div>
-                    </tr>
-                    <tr class="cart-total input-group mb-3">
-                        <span class="cart-total-title">Total</span>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">$</span>
-                            {{form.total}}
-                        </div>
-                    </tr>
-                </tfoot>
+                <div class="d-flex p-2 bd-highlight">
+                    <div class="d-flex flex-column bd-highlight mx-auto">
+                        <tr class="cart-total input-group mb-3">
+                            <span class="cart-total-title">Subtotal</span>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id>$</span>
+                                <input type="number" name="subtotal" class="form-control" id="subtotal" value="0" readonly>
+                            </div>
+                        </tr>
+                    </div>
+                    <div class="d-flex flex-column bd-highlight mx-auto">
+                        <tr class="cart-total input-group mb-3">
+                            <span class="cart-total-title">IVA</span>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id>$</span>
+                                <input type="number" name="iva" class="form-control" id="iva" value="0" readonly>
+                            </div>
+                        </tr>
+                    </div>
+                    <div class="d-flex flex-column bd-highlight mx-auto">
+                        <tr class="cart-total input-group mb-3">
+                            <span class="cart-total-title">Total</span>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">$</span>
+                                {{form.total}}
+                            </div>
+                        </tr>
+                    </div>
+                </div>
             </div>
-        </section>
+
 
         {{form.commentaries|as_crispy_field}}
 
@@ -180,6 +186,7 @@
             </button>
         </div>
     </form>
+</section>
 
 {% endblock %}
 

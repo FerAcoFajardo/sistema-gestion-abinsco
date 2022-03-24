@@ -209,7 +209,7 @@ const btn_guardar = document.getElementById('submit-btn');
 
 btn_guardar.onclick = function(event){
     let total_form = document.querySelector('#id_form-TOTAL_FORMS')
-
+    
     if (total_form.value <= 0) {
         event.preventDefault()
         Swal.fire({
