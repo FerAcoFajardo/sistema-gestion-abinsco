@@ -1,3 +1,4 @@
+from pickle import FALSE
 from tabnanny import verbose
 from django.db import models
 from django.forms import FloatField
@@ -11,6 +12,8 @@ class Sales(models.Model):
     customer = models.ForeignKey('customers.Customers', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, blank=True)
     total = models.FloatField(null=True, blank=True)
+    is_credit = models.BooleanField(null=False, blank=False, default=False)
+    payment_method = models.CharField(max_length=10, null=True, blank=True)
 
     class Meta:
         db_table = 'sales' # this is the name of the table in the database

@@ -73,7 +73,7 @@ class SaleDetailsForm(forms.ModelForm):
             'amount',
             'total',
             'price',
-            'discount'
+            'discount',
         ]
         
         labels = {
