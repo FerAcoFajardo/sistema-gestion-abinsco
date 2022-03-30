@@ -248,7 +248,7 @@ function updateCartTotal() {
         
         total +=  parseFloat(itemTotal.value)
     }
-    
+    total = Math.round(total * 100) / 100
     document.getElementById('subtotal').value = total
 
     document.getElementById('iva').value = Math.round( (total * 0.16) * 100) / 100

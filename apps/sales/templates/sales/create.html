@@ -30,11 +30,11 @@
         <!-- Inicia cuadro superior de la pantalla (cliente e información extra) -->
         <div class="row mb-5">
             <div class="col-md-12">
-
-                <!-- Inicia bloque "Información del cliente" -->
                 <div  id="estilo-tabla">
+
+                    <!-- Inicia bloque "Información del cliente" -->
                     <div class="col-md-6">
-                        <h2 id="titulo-cliente">Información del cliente:</h2>
+                        <h2 id="titulo">Información del cliente:</h2>
                         <dl>
                             <dt>Nombre</dt>
                             <dd id="customer-name">{{customer.name}}</dd>
@@ -51,38 +51,45 @@
                     <!-- Finaliza bloque "Información del cliente" -->
         
                     <!-- Inicia bloque "Otra información" -->
-                    <div class="col-md-6">            
-                        <h2 id="titulo-cliente">Otra información:</h2>
-                        
-                        <p>Método de pago:</p>
-        
-                        <div id="radios">
-                            <input type="radio" id="efectivo" name="metodo" value="Efectivo"
-                                    checked>
-                            <label for="efectivo">Efectivo</label>
-                        </div>
-                        <div id="radios">
-                            <input type="radio" id="tarjeta" name="metodo" value="Tarjeta"
-                                    >
-                            <label for="tarjeta">Tarjeta</label>
-                        </div>
-        
+                    <div class="col-md-6">      
+                        <h2 id="titulo">Otra información:</h2>
+                            
                         <p>Tipo de venta:</p>
-        
+            
                         <div id="radios">
-                            <input type="radio" id="contado" name="tipo" value="contado" checked>
+                            <input type="radio" id="contado" name="tipo" value="contado" checked />
                             <label for="contado">Contado</label>
                         </div>
                         <div id="radios">
-                            <input type="radio" id="credito" name="tipo" value="credito">
+                            <input type="radio" id="credito" name="tipo" value="credito" />
                             <label for="credito">Credito</label>
+                        </div>
+                        <div id="payment-method-block">
+                            <div id="payment">
+                                <p>Método de pago:</p>
+                    
+                                <div id="radios">
+                                    <input type="radio" id="efectivo" name="metodo" value="Efectivo" checked />
+                                    <label for="efectivo">Efectivo</label>
+                                </div>
+                                <div id="radios">
+                                    <input type="radio" id="tarjeta" name="metodo" value="Tarjeta" />
+                                    <label for="tarjeta">Tarjeta</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- Finaliza bloque "Otra información" -->                
                 </div>
             </div>
         </div>
-    
+        <!-- Finaliza cuadro superior de la pantalla (cliente e información extra) -->
+
+        <!-- Inicia cuadro opcional si la venta es un credito -->
+        <div id="credit-details">
+
+        </div>
+        <!-- Finaliza cuadro superior de la pantalla (cliente e información extra) -->
         
 
         {{formset.management_form}}
@@ -100,7 +107,7 @@
                 <input type="hidden" name="form-sale" id="id_form-sale"> 
                 <div id="div_id_form-product" class="mb-3"> 
                     <label for="id_form-product" class="form-label requiredField">Producto<span class="asteriskField">*</span> </label> 
-                    <select name="form-product" class="cart-item-title select form-select" id="id_form-product"> 
+                    <select name="form-product" class="cart-item-title select form-select d-flex" id="id_form-product"> 
                         <option value="" selected="selected">---------</option> 
                         {% for product in products %}
                             <option value="{{product.id}}">{{product.name}}</option> 
@@ -111,22 +118,8 @@
 
             <button id="add-form" type="button" class="btn btn-primary">Agregar producto</button>
         {% endif %}
-            
-        
         
             <h2 class="section-header">Venta</h2>
-            {% comment %} <div class="cart-row">
-                <span class="cart-item cart-header cart-column">Producto</span>
-                <span class="cart-price cart-header cart-column">Precio</span>
-                <span class="cart-quantity cart-header cart-column">Cantidad</span>
-                <span class="cart-quantity cart-header cart-column">Total del producto</span>
-            </div>
-            <div class="cart-items form-empty">
-            </div>
-            <div class="cart-total">
-                <strong class="cart-total-title">Total</strong>
-                {{form.total}}
-            </div> {% endcomment %}
 
             <div class="table-responsive">
                 <table id="cart-table" class="table table-bordered table-sm">
@@ -191,10 +184,9 @@
 
 {% block js %}
 
-
+    <script src="{% static 'assets/js/sales-boxes.js' %}"></script>
     <script src="{% static 'assets/js/select2.js' %}"></script>
     <script src="{% static 'assets/js/table-cart.js' %}"></script>
-    
     
 {% endblock %}
 

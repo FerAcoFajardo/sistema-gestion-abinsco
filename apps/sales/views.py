@@ -89,11 +89,13 @@ class CreateView(LoginRequiredMixin, View):
         formset = SaleDetailsFormset(request.POST)
         
         credit_value = request.POST.get('tipo')
+        method = request.POST.get('metodo', 'Por definir')
 
         if credit_value == 'contado':
             credit_status = False
         else:
             credit_status = True
+            method = 'Por definir'
         
         if form.is_valid() and formset.is_valid():
             # Creación de una venta
@@ -102,7 +104,7 @@ class CreateView(LoginRequiredMixin, View):
                 user = self.request.user,
                 customer = form.cleaned_data['customer'] if form.cleaned_data['customer'] else Customers.objects.get(id=1),
                 total = form.cleaned_data['total'],
-                payment_method = request.POST.get('metodo'),
+                payment_method = method,
                 is_credit = credit_status
             )
             sale.save()

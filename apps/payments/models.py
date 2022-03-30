@@ -9,7 +9,7 @@ class Payments(models.Model):
     date = models.DateField(auto_now=True, auto_now_add=False)
     total = models.FloatField(null=True, blank=True)
     customers = models.ForeignKey('customers.Customers', on_delete=models.CASCADE)
-    pyment_method = models.TextField(null=True, blank=True)
+    payment_method = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         db_table = 'payments' # this is the name of the table in the database
