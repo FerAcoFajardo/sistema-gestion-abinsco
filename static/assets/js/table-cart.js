@@ -222,7 +222,7 @@ btn_guardar.onclick = async function(event){
         })
         return
 
-    } else {
+    } else if(customer != 1 && document.getElementById('credito').checked){
 
         event.preventDefault()
         customer_data = (await fetch(`http://localhost:8000/sales/get_customer_by_id/${customer}`))
@@ -252,7 +252,6 @@ btn_guardar.onclick = async function(event){
         var flag_sale = true
 
         var payment = 0
-
         if(document.getElementById('si').checked) {
             payment = parseFloat(document.getElementById('total-payment').value)
             if(payment == 0) {
@@ -314,6 +313,16 @@ btn_guardar.onclick = async function(event){
         if (flag_sale) {
             $('#sales-form').submit();
         }
+    }
+
+    if (total_form.value <= 0) {
+        event.preventDefault()
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debes agregar al menos  un producto!'
+        })
+        return
     }
 }
 
