@@ -221,7 +221,9 @@ btn_guardar.onclick = async function(event){
             text: 'A \"venta al publico\" no se le puede asignar credito!'
         })
         return
+
     } else {
+
         event.preventDefault()
         customer_data = (await fetch(`http://localhost:8000/sales/get_customer_by_id/${customer}`))
         
@@ -241,14 +243,51 @@ btn_guardar.onclick = async function(event){
             return
         }
 
+        
+
+        var total = parseFloat(document.getElementById('id_total').value)
+
+        var deb_comprobation = total + actual_deb
+
+        var flag_sale = true
+
+        var payment = 0
+
+        if(document.getElementById('si').checked) {
+            payment = parseFloat(document.getElementById('total-payment').value)
+            if(payment == 0) {
+                event.preventDefault()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Si se va a registrar un abono, este no debe ser 0.'
+                })
+                return
+            }
+
+            if(payment < 0) {
+                event.preventDefault()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'El abono no debe ser negativo.'
+                })
+                return
+            }
+
+            deb_comprobation = deb_comprobation - payment
+            console.log(deb_comprobation)
+        }
+
         event.preventDefault()
-        if(max_credit > 0 && actual_deb + document.getElementById('id_total').value > max_credit && document.getElementById('credito').checked ) {
+        if(max_credit > 0 && deb_comprobation > max_credit && document.getElementById('credito').checked ) {
+            flag_sale = false
             console.log("bark")
                 console.log("bark-colic")
                 event.preventDefault();
                 Swal.fire({
                     title: '¿Desea autorizar esta venta?',
-                    html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${actual_deb + total}</pre>`,
+                    html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${deb_comprobation}</pre>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -270,6 +309,10 @@ btn_guardar.onclick = async function(event){
                 text: 'Debes agregar al menos  un producto!'
             })
             return
+        }
+        
+        if (flag_sale) {
+            $('#sales-form').submit();
         }
     }
 }

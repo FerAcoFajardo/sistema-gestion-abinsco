@@ -92,12 +92,10 @@ function addElement() {
                             <dt>Total a abonar:</dt>
                             <dd>
                                 <div class="d-flex flex-column bd-highlight mx-auto">
-                                <input type="number" name="amount-payment" min="1" id="total-payment" />
+                                <input type="number" name="amount-payment" value="0" min="0" id="total-payment" />
                                 </div>
                             </dd>
                         </dl>
-                        
-            
                 </div>
             </div>
         </div>
