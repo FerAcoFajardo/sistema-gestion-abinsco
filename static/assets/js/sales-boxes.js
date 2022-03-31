@@ -64,16 +64,26 @@ function addElement() {
         <div class="row mb-5">
             <div class="col-md-12">
                 <div  id="estilo-tabla" class="pb-2">  
-
                         <h2 id="titulo">Registrar primer abono</h2>
+                        <div id="credit-first-payment">
+                            <p>¿Desea realizar un abono?:</p>
+                            <div id="radios">
+                                <input type="radio" id="no" name="primer-pago" value="no" checked />
+                                <label for="no">No</label>
+                            </div>
+                            <div id="radios">
+                                <input type="radio" id="si" name="primer-pago" value="si" />
+                                <label for="si">Si</label>
+                            </div>
+                        </div>
                         <div id="payment-method-credit">
                             <p>Método de pago:</p>
                             <div id="radios">
-                                <input type="radio" id="efectivo" name="metodo" value="Efectivo" checked />
+                                <input type="radio" id="efectivo" name="metodo-abono" value="Efectivo" checked />
                                 <label for="efectivo">Efectivo</label>
                             </div>
                             <div id="radios">
-                                <input type="radio" id="tarjeta" name="metodo" value="Tarjeta" />
+                                <input type="radio" id="tarjeta" name="metodo-abono" value="Tarjeta" />
                                 <label for="tarjeta">Tarjeta</label>
                             </div>
                         </div>
@@ -82,7 +92,7 @@ function addElement() {
                             <dt>Total a abonar:</dt>
                             <dd>
                                 <div class="d-flex flex-column bd-highlight mx-auto">
-                                <input type="number" name="amount-payment" min="1" id="amount-payment" />
+                                <input type="number" name="amount-payment" min="1" id="total-payment" />
                                 </div>
                             </dd>
                         </dl>
@@ -97,3 +107,4 @@ function addElement() {
     var currentDiv = document.getElementById("credit-details");
     currentDiv.appendChild(newDiv);
   }
+

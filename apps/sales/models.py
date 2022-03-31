@@ -7,7 +7,7 @@ from django.forms import FloatField
 
 
 class Sales(models.Model):
-    date = models.DateField(auto_now=True, auto_now_add=False)
+    date = models.DateTimeField(auto_now=True, auto_now_add=False)
     commentaries = models.TextField(null=True, blank=True)
     customer = models.ForeignKey('customers.Customers', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, blank=True)

@@ -207,19 +207,73 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
 
 const btn_guardar = document.getElementById('submit-btn');
 
-btn_guardar.onclick = function(event){
+btn_guardar.onclick = async function(event){
+
     let total_form = document.querySelector('#id_form-TOTAL_FORMS')
-    
-    if (total_form.value <= 0) {
+
+    var customer = document.getElementById('id_customer').value
+
+    if (customer == 1 && document.getElementById('credito').checked) {
         event.preventDefault()
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Debes agregar al menos  un producto!'
+            text: 'A \"venta al publico\" no se le puede asignar credito!'
         })
         return
+    } else {
+        event.preventDefault()
+        customer_data = (await fetch(`http://localhost:8000/sales/get_customer_by_id/${customer}`))
+        
+        data = await customer_data.json();
+            
+        var actual_deb = data.actual_deb
+        var max_credit = data.max_credit
+        var total = document.getElementById('id_total').value
+
+        if (max_credit == 0  && document.getElementById('credito').checked) {
+            event.preventDefault()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'El cliente no tiene credito autorizado.'
+            })
+            return
+        }
+
+        event.preventDefault()
+        if(max_credit > 0 && actual_deb + document.getElementById('id_total').value > max_credit && document.getElementById('credito').checked ) {
+            console.log("bark")
+                console.log("bark-colic")
+                event.preventDefault();
+                Swal.fire({
+                    title: '¿Desea autorizar esta venta?',
+                    html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${actual_deb + total}</pre>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#sales-form').submit();
+                    }
+                  })
+        }
+
+        if (total_form.value <= 0) {
+            event.preventDefault()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Debes agregar al menos  un producto!'
+            })
+            return
+        }
     }
 }
+
 
 function updateCartTotal() {
     var table_length = document.getElementById("cart-table").rows.length

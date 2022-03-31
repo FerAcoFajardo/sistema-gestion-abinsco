@@ -23,7 +23,7 @@
 
 <br>
 <section class="container content-section">
-<form method="POST" action=".">
+<form id="sales-form" method="POST" action=".">
     {% csrf_token %}
 
         {{form.customer|as_crispy_field}}

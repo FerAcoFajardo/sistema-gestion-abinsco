@@ -6,15 +6,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import formset_factory
 from django.http import JsonResponse
 from django.contrib import messages
-from django.core import serializers
 
-from apps import products
 
 
 from .models import Sales, SaleDetails
 from .forms import SalesForm, SaleDetailsForm
 from ..customers.models import Customers
 from ..products.models import Products
+from ..payments.models import Payments
+
 
 from pprint import pprint
 import json
@@ -108,7 +108,6 @@ class CreateView(LoginRequiredMixin, View):
                 is_credit = credit_status
             )
             sale.save()
-            print(formset)
             for form_details in formset:
                 if form_details.is_valid():
                     details = form_details.save(commit=False)
@@ -119,9 +118,30 @@ class CreateView(LoginRequiredMixin, View):
                 
                 else:
                     self.form_invalid(form, formset)
+            
             else: 
                 self.form_invalid(form, formset)
+
+            if credit_status == True:
+                customer = Customers.objects.get(id=sale.customer.id)
+                customer.actual_deb = customer.actual_deb + sale.total
                         
+                if request.POST.get('primer-pago', None) == 'si':
+                    # metodo-abono
+                    # total-payment
+                    method = request.POST.get('metodo-abono')
+                    abono = request.POST.get('amount-payment')
+                    
+                    customer.actual_deb = customer.actual_deb - float(abono)
+                    
+                    payment = Payments.objects.create(
+                        total = abono,
+                        customers = sale.customer,
+                        payment_method = method
+                    )
+                    payment.save()
+                customer.save()    
+
             messages.success(request,self.message)
             return redirect(self.success_url)
         else:
@@ -174,7 +194,6 @@ def get_product_by_id(request, pk):
     if request.method == 'GET':
         
         product = Products.objects.get(id=pk)
-        print(product)
         data = {
             'id': product.id,
             'name': product.name,
@@ -227,6 +246,8 @@ def get_customer_by_id(request, pk):
             'address': customer.address,
             'phone': customer.phone,
             'email': customer.email,
+            'max_credit': customer.max_credit,
+            'actual_deb': customer.actual_deb,
         }
         
         return JsonResponse(data)

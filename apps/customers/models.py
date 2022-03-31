@@ -1,4 +1,5 @@
 from django.db import models
+from tomlkit import value
 
 
 class Customers(models.Model):
@@ -7,8 +8,8 @@ class Customers(models.Model):
     address = models.CharField(max_length=200, null=False, blank=True)
     phone = models.CharField(max_length=18, null=False, blank=True)
     email = models.EmailField(null=False, blank=True)
-    max_credit = models.FloatField(null=True, blank=True)
-    actual_deb = models.FloatField(null=True, blank=True)
+    max_credit = models.FloatField(null=True, blank=True, default=0)
+    actual_deb = models.FloatField(null=True, blank=True, default=0)
     # credit = models.ForeignKey('credit.Credit', on_delete=models.CASCADE)
     # sale = models.ForeignKey('sales.Sales', on_delete=models.CASCADE)
 
