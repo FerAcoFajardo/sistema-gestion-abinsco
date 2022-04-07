@@ -233,8 +233,22 @@ btn_guardar.onclick = async function(event){
         data = await customer_data.json();
             
         var actual_deb = data.actual_deb
+        actual_deb = Math.round(actual_deb * 100) / 100
+
         var max_credit = data.max_credit
-        var total = document.getElementById('id_total').value
+        max_credit = Math.round(max_credit * 100) / 100
+
+        var total = parseFloat(document.getElementById('id_total').value)
+        total = Math.round(total * 100) / 100
+
+        deb_comprobation = total + actual_deb
+
+        if(document.getElementById('si').checked) {
+            var abonoSale = parseFloat(document.getElementById('total-payment').value)
+            abonoSale = Math.round(abonoSale * 100) / 100
+
+            deb_comprobation -= abonoSale
+        }
 
         if (max_credit == 0  && document.getElementById('credito').checked) {
             Swal.fire({
@@ -245,22 +259,22 @@ btn_guardar.onclick = async function(event){
             return
         }
 
-        if(max_credit > 0 && actual_deb + document.getElementById('id_total').value > max_credit && document.getElementById('credito').checked ) {
-            	
-                Swal.fire({
-                    title: '¿Desea autorizar esta venta?',
-                    html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${deb_comprobation}</pre>`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                  }).then((result) => {
+        
+        if(max_credit > 0 && deb_comprobation > max_credit && document.getElementById('credito').checked ) {  
+            Swal.fire({
+                title: '¿Desea autorizar esta venta?',
+                html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${deb_comprobation}</pre>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                }).then((result) => {
                     if (result.isConfirmed) {
-                        $('#sales-form').submit();
+                        $('#sales-form').submit()
                     }
-                  })
+                })
         } else {
             confirmed = true
         }
@@ -272,10 +286,6 @@ btn_guardar.onclick = async function(event){
                 text: 'Debes agregar al menos  un producto!'
             })
             return
-        }
-        
-        if (flag_sale) {
-            $('#sales-form').submit();
         }
     }
 
@@ -291,11 +301,11 @@ btn_guardar.onclick = async function(event){
 
 
     if(!document.getElementById('credito').checked) {
-        $('#sales-form').submit();
+        $('#sales-form').submit()
     }
 
     if(confirmed) {
-        $('#sales-form').submit();
+        $('#sales-form').submit()
     }
 }
 
