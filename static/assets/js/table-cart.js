@@ -242,13 +242,15 @@ btn_guardar.onclick = async function(event){
         total = Math.round(total * 100) / 100
 
         deb_comprobation = total + actual_deb
-
-        if(document.getElementById('si').checked) {
-            var abonoSale = parseFloat(document.getElementById('total-payment').value)
-            abonoSale = Math.round(abonoSale * 100) / 100
-
-            deb_comprobation -= abonoSale
-        }
+        
+        if(document.getElementById('credito').checked){
+            if(document.getElementById('si').checked) {
+                var abonoSale = parseFloat(document.getElementById('total-payment').value)
+                abonoSale = Math.round(abonoSale * 100) / 100
+    
+                deb_comprobation -= abonoSale
+            }
+        }        
 
         if (max_credit == 0  && document.getElementById('credito').checked) {
             Swal.fire({
