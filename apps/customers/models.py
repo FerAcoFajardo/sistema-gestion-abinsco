@@ -1,5 +1,4 @@
 from django.db import models
-from tomlkit import value
 
 
 class Customers(models.Model):

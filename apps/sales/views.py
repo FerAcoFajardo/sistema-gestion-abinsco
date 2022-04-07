@@ -132,7 +132,10 @@ class CreateView(LoginRequiredMixin, View):
                     method = request.POST.get('metodo-abono')
                     abono = request.POST.get('amount-payment')
                     
-                    customer.actual_deb = customer.actual_deb - float(abono)
+                    if customer.actual_deb:
+                        customer.actual_deb = customer.actual_deb - float(abono)
+                    else:
+                        customer.actual_deb = float(abono)
                     
                     payment = Payments.objects.create(
                         total = abono,
