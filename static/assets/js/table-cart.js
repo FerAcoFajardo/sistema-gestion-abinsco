@@ -207,7 +207,7 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
     updateCartTotal()
 }
 
-function validateStock(){
+async function validateStock(){
     // Iterate over all the rows in the table
     let table = document.getElementById('cart-body')
     let rows = table.getElementsByTagName('tr')
@@ -216,25 +216,20 @@ function validateStock(){
         let row = rows[i]
         // get the product id
         let product_id = row.querySelector('.cart-item-code').value
-        // get the amount
-        let amount = row.querySelector('.cart-quantity-input').value
-        
-        $.ajax({
-            url: `http://localhost:8000/sales/get_product/${product_id}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data)
-                if (data.stock < amount) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: `No hay suficiente stock del producto ${data}!`
-                    })
-                }
-            }
-        });
 
+        product_data = (await fetch(`http://localhost:8000/sales/get_product/${product_id}`))
+
+        var data = await product_data.json();
+        // get the amount
+        let amount = parseInt(row.querySelector('.cart-quantity-input').value)
+
+        if (data.stock < amount) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: `El producto ${data.name} esta agotado en el sistema!<pre>Cantidad vendida: ${amount}</pre><pre>Cantidad en el sistema: ${data.stock - amount}</pre>`,
+            })
+        }
     }
 }
 
@@ -296,7 +291,7 @@ btn_guardar.onclick = async function(event){
 
         
         if(max_credit > 0 && deb_comprobation > max_credit && document.getElementById('credito').checked ) {  
-            Swal.fire({
+            var result = await Swal.fire({
                 title: '¿Desea autorizar esta venta?',
                 html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${deb_comprobation}</pre>`,
                 icon: 'warning',
@@ -305,11 +300,13 @@ btn_guardar.onclick = async function(event){
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#sales-form').submit()
-                    }
                 })
+            if (result.isConfirmed) {
+                await validateStock() 
+                $('#sales-form').submit()
+                                       
+            }
+
         } else {
             confirmed = true
         }
@@ -336,12 +333,14 @@ btn_guardar.onclick = async function(event){
 
 
     if(!document.getElementById('credito').checked) {
-        $('#sales-form').submit()
-    }
-
-    if(confirmed) {
-        $('#sales-form').submit()
-    }
+        await validateStock()
+        $('#sales-form').submit()                
+    } else {
+        if(confirmed) {
+            await validateStock()        
+            $('#sales-form').submit()
+        }
+    }    
 }
 
 

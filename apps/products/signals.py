@@ -18,7 +18,5 @@ def update_stock(sender, instance, **kwargs):
         _type_: _description_
     """
     with transaction.atomic():
-        if instance.product.in_storage <= 0:
-            return
         instance.product.in_storage -= instance.amount
         instance.product.save()
