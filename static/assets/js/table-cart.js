@@ -227,13 +227,7 @@ btn_guardar.onclick = async function(event){
         })
         return
 
-<<<<<<< HEAD
     } else {
-=======
-    } else if(customer != 1 && document.getElementById('credito').checked){
-
-        event.preventDefault()
->>>>>>> f2a3eb62874141a293d2f6acc615008579e16c2d
         customer_data = (await fetch(`http://localhost:8000/sales/get_customer_by_id/${customer}`))
         
         data = await customer_data.json();
