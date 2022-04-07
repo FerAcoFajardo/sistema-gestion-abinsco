@@ -210,13 +210,16 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
 const btn_guardar = document.getElementById('submit-btn');
 
 btn_guardar.onclick = async function(event){
+    var confirmed = false
+
+    event.preventDefault()
 
     let total_form = document.querySelector('#id_form-TOTAL_FORMS')
 
     var customer = document.getElementById('id_customer').value
 
     if (customer == 1 && document.getElementById('credito').checked) {
-        event.preventDefault()
+        
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -224,9 +227,13 @@ btn_guardar.onclick = async function(event){
         })
         return
 
+<<<<<<< HEAD
+    } else {
+=======
     } else if(customer != 1 && document.getElementById('credito').checked){
 
         event.preventDefault()
+>>>>>>> f2a3eb62874141a293d2f6acc615008579e16c2d
         customer_data = (await fetch(`http://localhost:8000/sales/get_customer_by_id/${customer}`))
         
         data = await customer_data.json();
@@ -236,7 +243,6 @@ btn_guardar.onclick = async function(event){
         var total = document.getElementById('id_total').value
 
         if (max_credit == 0  && document.getElementById('credito').checked) {
-            event.preventDefault()
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -245,6 +251,10 @@ btn_guardar.onclick = async function(event){
             return
         }
 
+<<<<<<< HEAD
+        if(max_credit > 0 && actual_deb + document.getElementById('id_total').value > max_credit && document.getElementById('credito').checked ) {
+            	
+=======
         
 
         var total = parseFloat(document.getElementById('id_total').value)
@@ -286,6 +296,7 @@ btn_guardar.onclick = async function(event){
             console.log("bark")
                 console.log("bark-colic")
                 event.preventDefault();
+>>>>>>> f2a3eb62874141a293d2f6acc615008579e16c2d
                 Swal.fire({
                     title: '¿Desea autorizar esta venta?',
                     html: `El cliente ya ha superado su credito!<pre>Credito otorgado: ${max_credit}</pre><pre>Deuda actual: ${actual_deb}</pre><pre>Deuda nueva: ${deb_comprobation}</pre>`,
@@ -300,10 +311,11 @@ btn_guardar.onclick = async function(event){
                         $('#sales-form').submit();
                     }
                   })
+        } else {
+            confirmed = true
         }
 
         if (total_form.value <= 0) {
-            event.preventDefault()
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -325,6 +337,15 @@ btn_guardar.onclick = async function(event){
             text: 'Debes agregar al menos  un producto!'
         })
         return
+    }
+
+
+    if(!document.getElementById('credito').checked) {
+        $('#sales-form').submit();
+    }
+
+    if(confirmed) {
+        $('#sales-form').submit();
     }
 }
 
