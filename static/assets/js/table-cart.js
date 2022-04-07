@@ -207,6 +207,39 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
     updateCartTotal()
 }
 
+function validateStock(){
+    // Iterate over all the rows in the table
+    let table = document.getElementById('cart-body')
+    let rows = table.getElementsByTagName('tr')
+    // Iterate over all products in the cart
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i]
+        // get the product id
+        let product_id = row.querySelector('.cart-item-code').value
+        // get the amount
+        let amount = row.querySelector('.cart-quantity-input').value
+        
+        $.ajax({
+            url: `http://localhost:8000/sales/get_product/${product_id}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.stock < amount) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: `No hay suficiente stock del producto ${data}!`
+                    })
+                }
+            }
+        });
+
+    }
+}
+
+
+
 const btn_guardar = document.getElementById('submit-btn');
 
 btn_guardar.onclick = async function(event){
