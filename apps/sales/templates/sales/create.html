@@ -172,12 +172,12 @@
 
         {{form.commentaries|as_crispy_field}}
 
-        <div class="">
-            <div class="col-md-6 btn-group">
+        <div class="mt-5">
+            <div class="col-md-12 btn-group">
                 <button id="submit-btn" class="btn btn-primary btn-lg save-sale" type="submit">
                     Guardar
                 </button>
-                <a type="button" href="{% url 'sales:index' %}" class="btn btn-danger btn-lg">Cancelar</a>
+                <a type="button" href="{% url 'sales:index' %}" class="btn btn-danger btn-lg c-red">Cancelar</a>
             </div>
         </div>
     </form>

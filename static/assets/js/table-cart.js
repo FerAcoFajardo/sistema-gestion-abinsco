@@ -223,11 +223,11 @@ async function validateStock(){
         // get the amount
         let amount = parseInt(row.querySelector('.cart-quantity-input').value)
 
-        if (data.stock < amount) {
+        if (data.stock < amount || (data.stock - amount) == 0) {
             await Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                html: `El producto ${data.name} esta agotado en el sistema!<pre>Cantidad vendida: ${amount}</pre><pre>Cantidad en el sistema: ${data.stock - amount}</pre>`,
+                html: `El producto ${data.name} esta agotado en el sistema!<pre>Cantidad vendida: ${amount}</pre><pre>Nueva cantidad en el sistema: ${data.stock - amount}</pre>`,
             })
         }
     }
