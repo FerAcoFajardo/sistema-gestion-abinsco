@@ -2,7 +2,7 @@
 
 function removeCartItem(event) {
     let buttonClicked = event.currentTarget
-    console.log('Button id '+buttonClicked.id)
+    // console.log('Button id '+buttonClicked.id)
     
     
     let total_form = document.querySelector('#id_form-TOTAL_FORMS')
@@ -11,8 +11,8 @@ function removeCartItem(event) {
         if(i >= buttonClicked.id){
             // Get the amount
             let amount = document.getElementById(`id_form-${i}-amount`)
-            console.log("i value: " + i)
-            console.log(amount)
+            // console.log("i value: " + i)
+            // console.log(amount)
             // Get the price
             let price = document.getElementById(`id_form-${i}-price`)
             // Get the total
@@ -46,11 +46,21 @@ function removeCartItem(event) {
 
 function quantityChanged(event) {
     var input = event.target
+    // Get the index of the id
+    let index = input.id.split('-')[1]
+    // console.log(index)
+
+    // Get the kind of pz
+    let unity = document.getElementById(`id_unity-${index}`).innerHTML
+    console.log(unity)
     if (isNaN(input.value) || input.value <= 0) {
         // Check if the input is a float
         input.value = 1
     }
-    input.value = Math.floor(input.value)
+    console.log(unity === "kg")
+    if (unity !== "kg") {
+        input.value = Math.floor(input.value);
+    }
     updateCartTotal()
 }
 
@@ -108,7 +118,7 @@ button.addEventListener("click", () => {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            console.log(data)
+            // console.log(data)
             addItemToCart(data.id, data.name, data.price, data.image, data.stock, data.description, data.code, data.unity, data.category_id)
         }
     });
@@ -166,7 +176,7 @@ function addItemToCart(id, title, price, imageSrc, stock, description, code, uni
             </td>
 
             <td class="cart-item  cart-column align-middle text-center">
-                <input type="hidden" name="form-${total_form.value}-unity" class="cart-item-unity" id="id_form-${total_form.value}-unity" value="${id}"><span class="cart-item-unity">${unity}</span>
+                <input type="hidden" name="form-${total_form.value}-unity" class="cart-item-unity" id="id_form-${total_form.value}-unity" value="${id}"><span id="id_unity-${total_form.value}" class="cart-item-unity">${unity}</span>
             </td>
 
             <td class="cart-item  cart-column align-middle">
@@ -355,10 +365,10 @@ function updateCartTotal() {
         var itemTotal = document.getElementById(`id_form-${i}-total`)
         var discount = document.getElementById(`id_form-${i}-discount`)
         
-        console.log(`precio: ${priceElement.value}`)
-        console.log(`cantidad: ${quantityElement.value}`)
-        console.log(`total: ${itemTotal.value}`)
-        console.log(`descuento: ${discount.value}`)
+        // console.log(`precio: ${priceElement.value}`)
+        // console.log(`cantidad: ${quantityElement.value}`)
+        // console.log(`total: ${itemTotal.value}`)
+        // console.log(`descuento: ${discount.value}`)
         
         var price = parseFloat(priceElement.value)
         itemTotal.value = price * quantityElement.value
