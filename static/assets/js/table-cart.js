@@ -22,6 +22,8 @@ function removeCartItem(event) {
             // Get product
             let product = document.getElementById(`id_form-${i}-product`)
             
+            let unity = document.getElementById(`id_unity-${i}`)
+            
             // Changes the IDs
             amount.id = `id_form-${i-1}-amount`
 
@@ -29,6 +31,7 @@ function removeCartItem(event) {
             total.id = `id_form-${i-1}-total`
             discount.id = `id_form-${i-1}-discount`
             product.id = `id_form-${i-1}-product`
+            unity.id = `id_unity-${i-1}`
             // Change the names
             amount.name = `form-${i-1}-amount`
             price.name = `form-${i-1}-price`
