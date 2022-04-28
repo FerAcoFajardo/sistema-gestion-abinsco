@@ -301,6 +301,14 @@ btn_guardar.onclick = async function(event){
             return
         }
 
+        if (max_credit > 0 && ((actual_deb + total) - abonoSale) < 0  && document.getElementById('credito').checked ){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: `<pre>El cliente esta abonando mas que su deuda total!</pre><pre>Deuda nueva: ${actual_deb + total}</pre><pre>Abono: ${abonoSale}</pre>`,
+            })
+            return
+        } 
         
         if(max_credit > 0 && deb_comprobation > max_credit && document.getElementById('credito').checked ) {  
             var result = await Swal.fire({
@@ -349,6 +357,29 @@ btn_guardar.onclick = async function(event){
         $('#sales-form').submit()                
     } else {
         if(confirmed) {
+
+            /*
+
+                Por si al final implementamos que la venta con credito donde se supera el abono,
+                en vez de impedir la venta, avise al usuario de devolver al cliente el excedente
+
+                Quedaria pediente hacer los cambios en la logica donde sea necesario (probablemente el view.py)
+                para que el sistema no registre lo que se le devuelva al cliente, y en su deuda quede 0,0
+
+                Ejemplo:
+                    Cliente tiene deduda de 100 y abona 150
+                    si actualmente hicieramos la venta sin impedirla y avisando de la devuelta,
+                    en DB se registraria con una deuda de -50... 
+
+                if (max_credit > 0 && ((actual_deb + total) - abonoSale) < 0  && document.getElementById('credito').checked ){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: `<pre>El cliente esta abonando mas que su deuda total!</pre><pre>Deuda nueva: ${actual_deb + total}</pre><pre>Abono: ${abonoSale}</pre>`,
+                })
+            return
+        } 
+            */
             await validateStock()        
             $('#sales-form').submit()
         }
