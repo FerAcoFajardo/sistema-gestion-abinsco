@@ -57,8 +57,7 @@ function quantityChanged(event) {
         // Check if the input is a float
         input.value = 1
     }
-    console.log(unity === "kg")
-    if (unity !== "kg") {
+    if (unity === "pz") {
         input.value = Math.floor(input.value);
     }
     updateCartTotal()
