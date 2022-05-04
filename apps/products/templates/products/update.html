@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% load static %} 
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Ventas
+{% endblock %}
+
+{% block css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'assets/css/sales.css' %}">
+
+    <style>
+        .hidden{
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="container content-section">
+    <form id="sales-form" method="POST" action=".">
+        {% csrf_token %}
+
+        {{form|crispy}}
+
+        <div class="mt-5">
+            <div class="col-md-12 btn-group">
+                <button id="submit-btn" class="btn btn-primary btn-lg save-sale" type="submit">
+                    Guardar
+                </button>
+                <a type="button" href="{% url 'sales:index' %}" class="btn btn-danger btn-lg c-red">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</section>
+
+{% endblock %}
+
+{% block js %}
+
+    
+{% endblock %}
+

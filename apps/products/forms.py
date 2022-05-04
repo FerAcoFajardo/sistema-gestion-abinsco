@@ -8,6 +8,8 @@ class ProductForm(forms.ModelForm):
         model = Products
         fields = '__all__'
         
+        exclude = ('image',)
+        
         labels = {
             'name': 'Nombre',
             'description': 'Descripción',

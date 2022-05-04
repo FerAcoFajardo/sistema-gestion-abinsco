@@ -16,7 +16,15 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return self.model.objects.all().order_by('-id')
 
+
 class CreateView(generic.CreateView):
+    template_name = 'products/create.html'
+    form_class = ProductForm
+    model = Products
+    success_url = reverse_lazy('products:index')
+    
+
+class EditView(generic.UpdateView):
     template_name = 'products/create.html'
     form_class = ProductForm
     model = Products
