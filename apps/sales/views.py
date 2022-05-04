@@ -22,7 +22,7 @@ import json
 # Create your views here.
 
 
-class IndexView(LoginRequiredMixin, generic.ListView):
+class IndexView(generic.ListView):
     template_name = 'sales/index.html'
     model = Sales
     context_object_name = 'sales'
@@ -32,7 +32,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
         return self.model.objects.all().order_by('-id')
 
 
-class CreateView(LoginRequiredMixin, View):
+class CreateView(View):
     template = 'sales/create.html'
     success_url = reverse_lazy('sales:index')
     message = 'La venta se ha registrado correctamente'
