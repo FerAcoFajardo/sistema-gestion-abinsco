@@ -25,7 +25,7 @@ class CreateView(generic.CreateView):
     
 
 class EditView(generic.UpdateView):
-    template_name = 'customers/create.html'
+    template_name = 'customers/update.html'
     form_class = CustomersForm
     model = Customers
     success_url = reverse_lazy('customers:index')
