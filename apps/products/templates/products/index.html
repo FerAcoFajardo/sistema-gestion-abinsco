@@ -213,4 +213,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
+    <!-- Delete Script -->
+    <script>
+        function destroy(id) {
+            let url = "{% url 'products:delete' 1 %}";
+            url = url.replace('1', id);
+            $("#deleteForm").attr('action', url);
+        }
+        function formSubmit() {
+            $("#deleteForm").submit();
+        }
+
+    </script>
+
 {% endblock %}

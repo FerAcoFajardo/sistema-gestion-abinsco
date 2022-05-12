@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Products
 from .forms import ProductForm
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = 'products/index.html'
     model = Products
     context_object_name = 'products'
@@ -17,15 +17,21 @@ class IndexView(generic.ListView):
         return self.model.objects.all().order_by('-id')
 
 
-class CreateView(generic.CreateView):
+class CreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'products/create.html'
     form_class = ProductForm
     model = Products
     success_url = reverse_lazy('products:index')
     
 
-class EditView(generic.UpdateView):
+class EditView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'products/update.html'
     form_class = ProductForm
+    model = Products
+    success_url = reverse_lazy('products:index')
+    
+
+class DeleteView(LoginRequiredMixin, generic.DeleteView):
+    template_name = 'products/delete.html'
     model = Products
     success_url = reverse_lazy('products:index')
