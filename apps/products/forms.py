@@ -20,3 +20,7 @@ class ProductForm(forms.ModelForm):
             'unit': 'Unidad',
             'image': 'Imagen',
         }
+        
+        widgets = {
+            'current_price': forms.NumberInput(attrs={'min':'0'}),
+        }

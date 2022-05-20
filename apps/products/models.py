@@ -25,7 +25,7 @@ UNITY_CHOICES = [
 def validate_positive(value):
     if value < 0:
         raise ValidationError(
-            _("%(value)s is not positive."),
+            _("%(value)s debe de ser positivo."),
             params={"value": value}
         )
 
