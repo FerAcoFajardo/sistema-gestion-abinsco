@@ -40,5 +40,4 @@ class SaleDetails(models.Model):
         ordering = ['id'] # this is the default ordering of the model
         
     def __str__(self):
-        return f'Sale: {self.sale.id} - Product: {self.product.name}'
-
+        return f'Sale ID: {self.id}'
