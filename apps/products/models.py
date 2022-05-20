@@ -49,7 +49,7 @@ class Products(models.Model):
     description = models.TextField(null=False, blank=False)
     current_price = PositiveFloatField(null=False, blank=False)
     in_storage = models.PositiveIntegerField(null=False, blank=False)
-    code = models.CharField(max_length=10, null=False, blank=False)
+    code = models.CharField('Código', max_length=10, null=False, blank=False, unique=True)
     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
     unity = models.CharField(max_length=20,choices=UNITY_CHOICES, default='pz' ,null=False, blank=False) # Enum
     image = models.ImageField(upload_to='profiles/', max_length=255, null=True, blank=True, default=random_image_chooser())
@@ -60,8 +60,8 @@ class Products(models.Model):
 
     class Meta:
         db_table = "products"
-        verbose_name = "products"
-        verbose_name_plural ="products"
+        verbose_name = "Producto"
+        verbose_name_plural ="Productos"
         ordering = ["id"]
 
     def __str__(self):
