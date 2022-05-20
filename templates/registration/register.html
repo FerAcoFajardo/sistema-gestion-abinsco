@@ -6,7 +6,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
         <!-- Favicon and title -->
-        <link rel="icon" type="image/x-icon" href="https://w7.pngwing.com/pngs/672/907/png-transparent-favicon-buggi-trademark-logo-circle.png">
 		<title>Register User</title>
 
 		{% load static %}
@@ -24,7 +23,7 @@
 				<div class="col-sm-12 col-lg-10 col-xl-9 col-xxl-7 bg-white shadow-lg" style="border-radius: 5px;">
 					<div class="p-5">
 						<div class="text-center">
-							<h4 class="text-dark mb-4">Create an Account!</h4>
+							<h4 class="text-dark mb-4">¡Crear en una cuenta!</h4>
 						</div>
 						
 						<!-- Start: Register Form -->
@@ -33,32 +32,32 @@
 							
 							<!-- Start: Username -->
 							<div class="mb-3">
-								<input class="form-control form-control-user" type="text" placeholder="Username" required="" name="username">
+								<input class="form-control form-control-user" type="text" placeholder="Nombre de usuario" required="" name="username">
 							</div>
 
 							<!-- Start: Email -->
 							<div class="mb-3">
-								<input class="form-control form-control-user" type="email" id="email" placeholder="Email Address" required="" name="email">
+								<input class="form-control form-control-user" type="email" id="email" placeholder="Correo electrónico" required="" name="email">
 							</div>
 
 							<!-- Start: Password -->
 							<div class="row mb-3">
 								<div class="col-sm-6 mb-3 mb-sm-0">
-									<input class="form-control form-control-user" type="password" id="password" placeholder="Password" required="" name="password1">
+									<input class="form-control form-control-user" type="password" id="password" placeholder="Contraseña" required="" name="password1">
 								</div>
 
 								<div class="col-sm-6">
-									<input class="form-control form-control-user" type="password" id="verifyPassword" placeholder="Repeat Password" required="" name="password2">
+									<input class="form-control form-control-user" type="password" id="verifyPassword" placeholder="Repita la contraseña" required="" name="password2">
 								</div>
 							</div>
 
 							<!-- Start: Names -->
 							<div class="row mb-3">
 								<div class="col-sm-6 mb-3 mb-sm-0">
-									<input class="form-control form-control-user" type="text" placeholder="First Name" name="first_name" required="">
+									<input class="form-control form-control-user" type="text" placeholder="Nombre/s" name="first_name" required="">
 								</div>
 								<div class="col-sm-6">
-									<input class="form-control form-control-user" type="text" placeholder="Last Name" name="last_name" required="">
+									<input class="form-control form-control-user" type="text" placeholder="Apellido/s" name="last_name" required="">
 								</div>
 							</div>
 
@@ -69,7 +68,7 @@
 							</div>
 							
 							<button class="btn btn-primary d-block btn-user w-100" id="submitBtn" type="submit">
-								Register Account
+								Crear cuenta
 							</button>
 
 							<hr>
@@ -79,14 +78,14 @@
 						<!-- Start: Forgot Password -->
 						<div class="text-center">
 							<a class="small" href="{% url 'forgot-password' %}">
-								Forgot Password?
+								¿Olvidó la contraseña?
 							</a>
 						</div>
 
 						<!-- Start: Login -->
 						<div class="text-center">
 							<a class="small" href="{% url 'login' %}">
-								Already have an account? Login!
+								¿Ya tiene una cuenta? Inicie sesión!
 							</a>
 						</div>
 					</div>
