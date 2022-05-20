@@ -75,7 +75,7 @@
                                         </td>
 
                                         <td>
-                                            {{sale.customer}}
+                                            {% if sale.customer %}{{sale.customer}}{% else %} Sin cliente{%endif%}
                                         </td>
 
                                         <td>
