@@ -114,6 +114,7 @@
                                             {% comment %} <a class="btn btnMaterial btn-flat primary semicircle" role="button" href="{% url 'edit:show' customer.id %}">
                                                 <i class="far fa-eye"></i>
                                             </a> {% endcomment %}
+                                            {% if customer.name != 'Venta al público' %}
                                             <a class="btn btnMaterial btn-flat success semicircle" role="button" href="{% url 'customers:edit' customer.id %}">
                                                 <i class="fas fa-pen"></i>
                                             </a>
@@ -121,6 +122,7 @@
                                             <a class="btn btnMaterial btn-flat accent btnNoBorders checkboxHover" role="button" style="margin-left: 5px;" data-bs-toggle="modal" onclick="destroy({{customer.id}})" data-bs-target="#delete-modal" href="#">
                                                 <i class="fas fa-trash btnNoBorders" style="color: #DC3545;"></i>
                                             </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
