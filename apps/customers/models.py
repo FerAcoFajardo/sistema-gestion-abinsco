@@ -12,7 +12,7 @@ def validate_positive(value):
         )
 
 
-class PositiveDecimalField(models.DecimalField):
+class PositiveFloatField(models.FloatField):
     description = _("Número decimal positivo")
 
     @cached_property
@@ -26,7 +26,7 @@ class Customers(models.Model):
     address = models.CharField(max_length=200, null=False, blank=True)
     phone = models.CharField(max_length=18, null=False, blank=True, validators=[RegexValidator(r'(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})')])
     email = models.EmailField(null=False, blank=True)
-    max_credit = models.FloatField(null=True, blank=True, default=0)
+    max_credit = PositiveFloatField(null=True, blank=True, default=0)
     actual_deb = models.FloatField(null=True, blank=True, default=0)
     # credit = models.ForeignKey('credit.Credit', on_delete=models.CASCADE)
     # sale = models.ForeignKey('sales.Sales', on_delete=models.CASCADE)

@@ -22,5 +22,5 @@ class ProductForm(forms.ModelForm):
         }
         
         widgets = {
-            'current_price': forms.NumberInput(attrs={'min':'0'}),
+            'current_price': forms.NumberInput(attrs={'min':'1'}),
         }
